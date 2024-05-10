@@ -1,50 +1,32 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-);
+// Define the button styling with TailwindCSS for enhanced visuals and animations
+const buttonStyles = `
+  relative inline-flex items-center justify-center font-bold text-white text-lg
+  bg-gradient-to-r from-purple-700 via-purple-500 to-purple-700
+  border-2 border-purple-500 hover:border-purple-400
+  py-3 px-6 rounded-full shadow-2xl
+  transition-all duration-500 ease-in-out
+  focus:outline-none focus-visible:ring-4 focus-visible:ring-purple-400 focus-visible:ring-opacity-50
+  before:absolute before:inset-0 before:bg-purple-600/30 before:rounded-full
+  before:scale-0 before:opacity-0 before:transition-all before:duration-500
+  hover:before:scale-110 hover:before:opacity-100
+  active:scale-90 active:bg-purple-800
+  overflow-hidden
+`;
 
 const Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
+      <Comp className={cn(buttonStyles, className)} ref={ref} {...props}>
+        {children}
+      </Comp>
     );
   }
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };
