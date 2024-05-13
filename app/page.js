@@ -19,7 +19,7 @@ export default async function Home() {
       }}
     >
       <Image
-        className="absolute mt-4 z-0"
+        className="absolute mt-8 z-0"
         src="/logo-full.png"
         width={800}
         height={800}
@@ -27,9 +27,9 @@ export default async function Home() {
         priority
       />
       <div className="mt-80 z-10 flex flex-col items-center">
-        <div className="mt-28 text-center">
+        <div className="mt-32 text-center">
           <h2
-            className={`${font.className} text-6xl text-white mt-14 font-bold`}
+            className={`${font.className} text-6xl text-white mt-16 font-bold`}
             style={{
               textShadow: `
               1px 1px 2px #696969,   /* dim gray */

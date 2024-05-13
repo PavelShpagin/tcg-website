@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@components/ui/button";
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-8 mx-12 left-0 right-0 z-50 px-12 py-2 bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl rounded-full shadow-lg">
+    <nav className="fixed top-8 mx-12 left-0 right-0 z-40 px-12 py-2 bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl rounded-full shadow-lg">
       <div className="max-w-8xl mx-auto flex items-center justify-between">
         <div className="flex items-center h-16">
           <Link href="/">
@@ -49,9 +50,12 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center">
-          <button className="text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 font-bold py-3 px-6 rounded-lg transition duration-200 ease-in-out">
-            Play Now
-          </button>
+          <Button
+            size="lg"
+            className="text-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 font-bold py-3 px-6 transition duration-200 ease-in-out"
+          >
+            Log out
+          </Button>
           <div className="ml-5">
             <svg
               className="h-8 w-8 text-gray-300"

@@ -111,7 +111,7 @@ export default function CreateCard() {
         description: "You successfully created a card.",
         variant: "success",
       });
-      // router.push("/minions"); // Navigate to minions listing or another appropriate page
+      router.push("/cards-official");
     } else {
       const errorData = await response.json();
       toast({
