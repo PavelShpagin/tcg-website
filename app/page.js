@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@components/ui/button";
-import { createClient } from "@/utils/supabase/server";
+import ButtonPurple from "@components/button-purple";
 import { Changa_One } from "next/font/google";
 import { FaDiscord } from "react-icons/fa";
 
@@ -11,13 +10,9 @@ const font = Changa_One({
 });
 
 export default async function Home() {
-  const supabase = createClient();
-  const { data: classes } = await supabase.from("class").select();
-  console.log(classes);
-
   return (
     <div
-      className="bg-cover flex flex-col items-center"
+      className="bg-cover flex flex-col items-center overflow-x-hidden max-w-full"
       style={{
         backgroundImage: "url(/home-bg.png)",
         height: "1800px",
@@ -66,11 +61,11 @@ export default async function Home() {
           Welcome to Our Community
         </h2>
 
-        <Link href="https://discord.gg/yourdiscordlink">
-          <Button className="mt-8">
+        <Link href="https://discord.gg/yourdiscordlink" className="mt-8">
+          <ButtonPurple>
             <FaDiscord className="mr-2" />
             Join Discord
-          </Button>
+          </ButtonPurple>
         </Link>
       </div>
     </div>

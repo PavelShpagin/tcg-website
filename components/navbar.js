@@ -24,7 +24,7 @@ const Navbar = () => {
             Game Info
           </Link>
           <Link
-            href="/cards"
+            href="/cards-official"
             className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
           >
             Cards
@@ -42,10 +42,10 @@ const Navbar = () => {
             Community
           </Link>
           <Link
-            href="/shop"
+            href="/create-card"
             className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
           >
-            Shop
+            Create
           </Link>
         </div>
         <div className="flex items-center">
