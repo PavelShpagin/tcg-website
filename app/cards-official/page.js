@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { Card } from "@components/card";
 
 export default function Gallery() {
   const [cards, setCards] = useState([]);

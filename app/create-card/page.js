@@ -8,11 +8,14 @@ import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
 import { Button } from "@components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Slider } from "@/components/ui/slider";
+import CardTemplate from "@components/svg/card-template";
 import Selector from "@components/selector";
 import axios from "axios";
+import html2canvas from "html2canvas";
 
 export default function CreateCard() {
-  const placeholderUrl = "/card-placeholder.png";
+  const placeholderUrl = "/card-image-placeholder.png";
   const [classes, setClasses] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [cardImage, setCardImage] = useState(placeholderUrl);
@@ -29,7 +32,20 @@ export default function CreateCard() {
     CardText: "",
     Class: "Blue",
   });
+  const [imageScale, setImageScale] = useState(1);
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   const router = useRouter();
+
+  // Constants for the image container boundaries
+  const IMAGE_BOUNDS = {
+    x: 0,
+    y: 0,
+    width: 97.367,
+    height: 132.292,
+  };
 
   useEffect(() => {
     fetch(placeholderUrl)
@@ -87,41 +103,50 @@ export default function CreateCard() {
     if (!validateForm()) return;
 
     setUploading(true);
-    console.log("Form Data:", cardData);
 
-    const formData = new FormData();
-    formData.append("imageFile", imageFile);
-    formData.append("CardName", cardData.CardName);
-    formData.append("CardText", cardData.CardText);
-    formData.append("Class", cardData.Class);
-    formData.append("LvL", cardData.LvL);
-    formData.append("Attack", cardData.Attack);
-    formData.append("Health", cardData.Health);
-    formData.append("Type", activeTab);
+    // Capture the SVG as an image
+    const svgElement = document.querySelector("#card-template");
+    const canvas = await html2canvas(svgElement, {
+      allowTaint: true,
+      useCORS: true,
+    });
 
-    if (activeTab !== "Stage") {
-      formData.append("Cost", cardData.Cost);
-    }
+    // Convert canvas to blob
+    canvas.toBlob(async (blob) => {
+      const formData = new FormData();
+      formData.append("imageFile", blob, "card.png");
+      formData.append("CardName", cardData.CardName);
+      formData.append("CardText", cardData.CardText);
+      formData.append("Class", cardData.Class);
+      formData.append("LvL", cardData.LvL);
+      formData.append("Attack", cardData.Attack);
+      formData.append("Health", cardData.Health);
+      formData.append("Type", activeTab);
 
-    const response = await axios.post("/api/create-card", formData);
+      if (activeTab !== "Stage") {
+        formData.append("Cost", cardData.Cost);
+      }
 
-    if (response.status >= 200 && response.status < 300) {
-      toast({
-        title: "Success",
-        description: "You successfully created a card.",
-        variant: "success",
-      });
-      router.push("/cards-official");
-    } else {
-      const errorData = await response.json();
-      toast({
-        title: "Error",
-        description:
-          errorData.message || "An error occurred while creating the card.",
-        variant: "destructive",
-      });
-    }
-    setUploading(false);
+      const response = await axios.post("/api/create-card", formData);
+
+      if (response.status >= 200 && response.status < 300) {
+        toast({
+          title: "Success",
+          description: "You successfully created a card.",
+          variant: "success",
+        });
+        router.push("/cards-official");
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Error",
+          description:
+            errorData.message || "An error occurred while creating the card.",
+          variant: "destructive",
+        });
+      }
+      setUploading(false);
+    }, "image/png");
   };
 
   const isDisabled = (field = "") => {
@@ -146,6 +171,49 @@ export default function CreateCard() {
         console.error("Failed to fetch classes:", error.message)
       );
   }, []);
+
+  const constrainPosition = (pos, currentScale) => {
+    const maxX = (97.367 * currentScale - 97.367) / 2;
+    const maxY = (132.292 * currentScale - 132.292) / 2;
+
+    return {
+      x: Math.max(-maxX, Math.min(maxX, pos.x)),
+      y: Math.max(-maxY, Math.min(maxY, pos.y)),
+    };
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX,
+      y: e.clientY,
+      initialX: imagePosition.x,
+      initialY: imagePosition.y,
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      const deltaX = (e.clientX - dragStart.x) * 0.05;
+      const deltaY = (e.clientY - dragStart.y) * 0.05;
+
+      const newPosition = {
+        x: dragStart.initialX + deltaX,
+        y: dragStart.initialY + deltaY,
+      };
+
+      setImagePosition(constrainPosition(newPosition, imageScale));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleScaleChange = ([value]) => {
+    setImageScale(value);
+    setImagePosition((prevPosition) => constrainPosition(prevPosition, value));
+  };
 
   return (
     <div
@@ -176,24 +244,6 @@ export default function CreateCard() {
             <div className="flex-1 space-y-4">
               <form className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className={uploading ? "opacity-30" : undefined}>
-                    <Label>
-                      Card Name
-                      <span className="text-red-400 ml-1">
-                        {errors.CardName}
-                      </span>
-                    </Label>
-                    <Input
-                      name="CardName"
-                      type="text"
-                      placeholder="Enter card name"
-                      value={cardData.CardName}
-                      onChange={handleInputChange}
-                      onFocus={handleFocus}
-                      className={errors.CardName && "border-2 border-red-400"}
-                      disable={uploading}
-                    />
-                  </div>
                   <div
                     className={
                       uploading || isDisabled("LvL") ? "opacity-30" : undefined
@@ -212,6 +262,24 @@ export default function CreateCard() {
                       onChange={handleInputChange}
                       onFocus={handleFocus}
                       className={errors.LvL && "border-2 border-red-400"}
+                    />
+                  </div>
+                  <div className={uploading ? "opacity-30" : undefined}>
+                    <Label>
+                      Card Name
+                      <span className="text-red-400 ml-1">
+                        {errors.CardName}
+                      </span>
+                    </Label>
+                    <Input
+                      name="CardName"
+                      type="text"
+                      placeholder="Enter card name"
+                      value={cardData.CardName}
+                      onChange={handleInputChange}
+                      onFocus={handleFocus}
+                      className={errors.CardName && "border-2 border-red-400"}
+                      disabled={uploading}
                     />
                   </div>
                   <div
@@ -253,6 +321,19 @@ export default function CreateCard() {
                       disabled={uploading}
                     />
                   </div>
+                </div>
+                <div className={uploading ? "opacity-30" : undefined}>
+                  <Label>Card Text</Label>
+                  <Textarea
+                    name="CardText"
+                    rows="3"
+                    placeholder="Enter card text"
+                    value={cardData.CardText}
+                    onChange={handleInputChange}
+                    disabled={uploading}
+                  ></Textarea>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div
                     className={
                       uploading || isDisabled("Attack")
@@ -300,17 +381,6 @@ export default function CreateCard() {
                     />
                   </div>
                 </div>
-                <div className={uploading ? "opacity-30" : undefined}>
-                  <Label>Card Text</Label>
-                  <Textarea
-                    name="CardText"
-                    rows="3"
-                    placeholder="Enter card text"
-                    value={cardData.CardText}
-                    onChange={handleInputChange}
-                    disabled={uploading}
-                  ></Textarea>
-                </div>
                 <div
                   className={`grid w-full max-w-sm items-center gap-1.5 ${
                     uploading ? "opacity-30" : undefined
@@ -319,7 +389,7 @@ export default function CreateCard() {
                   <Label>Upload Image</Label>
                   <Input
                     type="file"
-                    className="font-medium"
+                    className="font-medium text-white [&::file-selector-button]:text-gray-300 text-opacity-100 font-bold"
                     onChange={handleImageChange}
                     onFocus={handleFocus}
                     disabled={uploading}
@@ -335,13 +405,31 @@ export default function CreateCard() {
                 Submit
               </Button>
             </div>
-            <Image
-              className={uploading ? "opacity-30" : undefined}
-              src={cardImage}
-              width={368}
-              height={500}
-              alt="Card Preview"
-            />
+            <div className="relative group">
+              <CardTemplate
+                id="card-template"
+                className={uploading ? "opacity-30" : undefined}
+                imageUrl={cardImage}
+                scale={imageScale}
+                position={imagePosition}
+                isDragging={isDragging}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                cardData={cardData}
+                type={activeTab}
+              />
+              <div className="absolute left-1/2 bottom-[-25px] transform -translate-x-1/2 flex flex-col items-center gap-1.5 p-1.5 px-2.5 backdrop-blur-[1px] rounded-full transition-all duration-300 group-hover:backdrop-blur-[1px]">
+                <Slider
+                  value={[imageScale]}
+                  onValueChange={handleScaleChange}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

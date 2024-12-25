@@ -9,7 +9,6 @@ const Textarea = React.forwardRef(({ className, ...props }, ref) => {
         "flex min-h-[80px] w-full rounded-xl bg-background/50 px-3 py-2 font-bold ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
-      ref={ref}
       {...props}
     />
   );
