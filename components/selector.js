@@ -8,9 +8,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const Selector = ({ placeholder, label, items, onChange, disabled }) => {
+const Selector = ({ placeholder, label, items, value, onChange, disabled }) => {
   return (
-    <Select onValueChange={onChange} disabled={disabled}>
+    <Select onValueChange={onChange} disabled={disabled} value={value}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

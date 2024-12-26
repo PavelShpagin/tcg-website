@@ -47,15 +47,85 @@ export default function CreateCard() {
     height: 132.292,
   };
 
-  useEffect(() => {
-    fetch(placeholderUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const file = new File([blob], "card-placeholder.png", {
-          type: "image/png",
-        });
-        setImageFile(file);
+  const handleNewCard = async () => {
+    try {
+      const cardImages = localStorage.getItem("cardImages");
+
+      if (!cardImages || cardImages.length === 0) {
+        throw new Error("No images available");
+      }
+
+      const parsedCardImages = JSON.parse(cardImages);
+
+      const nextImage =
+        parsedCardImages[localStorage.getItem("currentImageIndex")];
+      localStorage.setItem(
+        "currentImageIndex",
+        (parseInt(localStorage.getItem("currentImageIndex")) + 1) %
+          parsedCardImages.length
+      );
+
+      // Set the image URL
+      setCardImage(nextImage.url);
+
+      // Fetch and set the image file
+      const imageResponse = await fetch(nextImage.url);
+      const blob = await imageResponse.blob();
+      const file = new File([blob], nextImage.name, {
+        type: `image/${nextImage.url.split(".").pop()}`,
       });
+      setImageFile(file);
+
+      // Set the card type and class
+      setActiveTab(nextImage.type);
+      setCardData({
+        CardName: "",
+        LvL: "",
+        Cost: "",
+        Attack: "",
+        Health: "",
+        CardText: "",
+        Class: nextImage.class,
+      });
+      setImageScale(1);
+      setImagePosition({ x: 0, y: 0 });
+
+      // Clear any existing errors
+      setErrors({});
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const checkCacheAndInit = async () => {
+      let retries = 0;
+      const maxRetries = 10;
+      const retryInterval = 500; // 500ms
+      const tryInit = () => {
+        const cachedImages = localStorage.getItem("cardImages");
+        if (cachedImages) {
+          handleNewCard();
+        } else if (retries < maxRetries) {
+          retries++;
+          setTimeout(tryInit, retryInterval);
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to load card images",
+            variant: "destructive",
+          });
+        }
+      };
+
+      tryInit();
+    };
+
+    checkCacheAndInit();
   }, []);
 
   const handleInputChange = (e) => {
@@ -314,7 +384,7 @@ export default function CreateCard() {
                     <Selector
                       name="Class"
                       placeholder="Blue"
-                      items={classes.map((cls, index) => cls.name)}
+                      items={classes.map((cls) => cls.name)}
                       value={cardData.Class}
                       onChange={handleSelectorChange}
                       onFocus={handleFocus}
@@ -396,14 +466,25 @@ export default function CreateCard() {
                   />
                 </div>
               </form>
-              <Button
-                size="md"
-                className="font-semibold"
-                onClick={handleSubmit}
-                disabled={uploading}
-              >
-                Submit
-              </Button>
+              <div className="flex space-x-4">
+                <Button
+                  size="md"
+                  className="font-semibold"
+                  onClick={handleSubmit}
+                  disabled={uploading}
+                >
+                  Submit
+                </Button>
+                <Button
+                  size="md"
+                  variant="outline"
+                  className="font-semibold"
+                  onClick={handleNewCard}
+                  disabled={uploading}
+                >
+                  New
+                </Button>
+              </div>
             </div>
             <div className="relative group">
               <CardTemplate

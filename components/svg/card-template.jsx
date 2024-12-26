@@ -137,15 +137,21 @@ const CardTemplate = ({
       case 3:
         return { keywordY: 85.3, startY: 65.029 };
       case 4:
-        return { keywordY: 62.1915, startY: 62.1915 };
+        return { keywordY: 85.7, startY: 65 };
       default:
-        return { keywordY: 65.029, startY: 65.029 };
+        return { keywordY: 60.1915, startY: 65.029 };
     }
   };
 
   const textLines = splitTextIntoLines(cardData.CardText);
   console.log(textLines);
-  const { keywordY, startY } = getY(textLines.length);
+  let { keywordY, startY } = getY(textLines.length);
+
+  if (type !== "Minion") {
+    keywordY += 4.5;
+    startY += 3;
+  }
+
   const keywordBoxes = getKeywordBoxes(textLines, keywordY);
 
   return (
