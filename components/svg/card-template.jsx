@@ -84,7 +84,15 @@ const CardTemplate = ({
 
     const keywords = [
       { pattern: "On Play:", gradient: "f" },
+      { pattern: "On Play", gradient: "f" },
       { pattern: "Death:", gradient: "g" },
+      { pattern: "Death", gradient: "g" },
+      { pattern: "On Attack:", gradient: "f" },
+      { pattern: "On Attack", gradient: "f" },
+      { pattern: "End of turn:", gradient: "f" },
+      { pattern: "End of turn", gradient: "f" },
+      { pattern: "Delay:", gradient: "f" },
+      { pattern: "Delay", gradient: "f" },
     ];
 
     lines.forEach((line, lineIndex) => {
@@ -95,33 +103,41 @@ const CardTemplate = ({
           const preTextWidth = getTextWidth(line.substring(0, pos));
 
           const effectiveX = 48.5 - (getTextWidth(line) / 2 - preTextWidth);
+          const effectiveY = keywordY + lineIndex * 8;
 
-          boxes.push(
-            <rect
-              key={`box-${pattern}-${lineIndex}`}
-              width={keywordWidth}
-              height={7.49}
-              x={effectiveX}
-              y={keywordY + lineIndex * 8}
-              ry={1.409}
-              style={{
-                fontVariationSettings: "normal",
-                opacity: 0.765661,
-                fill: `url(#${gradient})`,
-                fillOpacity: 1,
-                fillRule: "evenodd",
-                stroke: currentStyle.stroke[0],
-                strokeWidth: 1.05738,
-                strokeLinecap: "butt",
-                strokeLinejoin: "round",
-                strokeMiterlimit: 4,
-                strokeDasharray: "none",
-                strokeDashoffset: 0,
-                strokeOpacity: 1,
-                stopColor: "#000",
-              }}
-            />
+          // Check if a box with the same x and y already exists
+          const boxExists = boxes.some(
+            (box) => box.props.x === effectiveX && box.props.y === effectiveY
           );
+
+          if (!boxExists) {
+            boxes.push(
+              <rect
+                key={`box-${pattern}-${lineIndex}`}
+                width={keywordWidth}
+                height={7.49}
+                x={effectiveX}
+                y={effectiveY}
+                ry={1.409}
+                style={{
+                  fontVariationSettings: "normal",
+                  opacity: 0.765661,
+                  fill: `url(#${gradient})`,
+                  fillOpacity: 1,
+                  fillRule: "evenodd",
+                  stroke: currentStyle.stroke[0],
+                  strokeWidth: 1.05738,
+                  strokeLinecap: "butt",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 4,
+                  strokeDasharray: "none",
+                  strokeDashoffset: 0,
+                  strokeOpacity: 1,
+                  stopColor: "#000",
+                }}
+              />
+            );
+          }
         }
       });
     });
@@ -137,7 +153,7 @@ const CardTemplate = ({
       case 3:
         return { keywordY: 85.3, startY: 65.029 };
       case 4:
-        return { keywordY: 85.7, startY: 65 };
+        return { keywordY: 84.8, startY: 65.029 };
       default:
         return { keywordY: 60.1915, startY: 65.029 };
     }
@@ -514,7 +530,7 @@ const CardTemplate = ({
             href={imageUrl}
             preserveAspectRatio="xMidYMid slice"
             transform={`translate(${position.x} ${position.y}) scale(${scale})`}
-            transform-origin="center"
+            transformOrigin="center"
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
             onMouseLeave={onMouseLeave}
@@ -549,9 +565,6 @@ const CardTemplate = ({
         {keywordBoxes}
         <text
           xmlSpace="preserve"
-          z
-          x={31.84}
-          y={50.633}
           style={{
             fontStyle: "normal",
             fontVariant: "normal",
@@ -566,7 +579,7 @@ const CardTemplate = ({
             strokeWidth: 0.121855,
             filter: "url(#h)",
           }}
-          transform="scale(1.53333 1.4881)"
+          transform="matrix(1.4726183,0,0,1.4291704,1.9278672,2.8846697)"
         >
           <tspan
             x={31.84}

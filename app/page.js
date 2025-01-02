@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import ButtonPurple from "@components/button-purple";
-import { Changa_One } from "next/font/google";
+import { IM_Fell_English } from "next/font/google";
 import { FaDiscord } from "react-icons/fa";
 
-const font = Changa_One({
+const font = IM_Fell_English({
   weight: ["400"],
   subsets: ["latin"],
 });
@@ -19,8 +19,8 @@ export default async function Home() {
       }}
     >
       <Image
-        className="absolute mt-8 z-0"
-        src="/logo-full.png"
+        className="absolute mt-36 z-0"
+        src="/logo-full.svg"
         width={800}
         height={800}
         alt="Logo Full"

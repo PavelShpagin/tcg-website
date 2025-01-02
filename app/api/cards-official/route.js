@@ -23,6 +23,14 @@ export async function GET() {
     if (spells.error) throw new Error(spells.error.message);
     if (stages.error) throw new Error(stages.error.message);
 
+    const [minionsTest, spellsTest, stagesTest] = await Promise.all([
+      supabase.from("minions").select("*"),
+      supabase.from("spells").select("*"),
+      supabase.from("stages").select("*"),
+    ]);
+
+    console.log(minionsTest, spellsTest, stagesTest);
+
     const allImages = [...minions.data, ...spells.data, ...stages.data];
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 

@@ -19,10 +19,10 @@ const Navbar = () => {
         </div>
         <div className="flex items-center space-x-10">
           <Link
-            href="/game-info"
+            href="/rules"
             className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
           >
-            Game Info
+            Rules
           </Link>
           <Link
             href="/cards-official"

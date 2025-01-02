@@ -42,6 +42,10 @@
     @apply border-border;
   }
 
+  html {
+    font-family: var(--font-global);
+  }
+
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;

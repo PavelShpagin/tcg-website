@@ -15,9 +15,8 @@ const shuffleArray = (array) => {
 export default function ImagePreloader() {
   useEffect(() => {
     const loadImages = async () => {
-      console.log("Loading images");
       // Skip if already cached
-      if (localStorage.getItem("cardImages")) {
+      if (sessionStorage.getItem("cardImages")) {
         return;
       }
 
@@ -26,9 +25,9 @@ export default function ImagePreloader() {
         const data = await response.json();
         if (data.images) {
           const shuffledImages = shuffleArray(data.images);
-          localStorage.setItem("cardImages", JSON.stringify(shuffledImages));
-          localStorage.setItem("currentImageIndex", 0);
-          console.log("Images cached in localStorage");
+          sessionStorage.setItem("cardImages", JSON.stringify(shuffledImages));
+          sessionStorage.setItem("currentImageIndex", 0);
+          console.log("Images cached in sessionStorage");
         }
       } catch (error) {
         console.error("Failed to cache images:", error);

@@ -1,10 +1,13 @@
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
-import ImagePreloader from "@/components/image-preloader";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Roboto({
+  weight: ["700"],
+  subsets: ["latin"],
+  variable: "--font-global",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -13,10 +16,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <Navbar />
-        <ImagePreloader />
+        {/* <ImagePreloader /> */}
         <main>
           {children}
           <Toaster />
