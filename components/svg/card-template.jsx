@@ -21,6 +21,7 @@ const CardTemplate = ({
     Class: "Blue",
   },
   type,
+  flip = false,
   ...props
 }) => {
   console.log(type);
@@ -182,8 +183,8 @@ const CardTemplate = ({
       <svg
         id="card-template"
         xmlns="http://www.w3.org/2000/svg"
-        width={368.001}
-        height={500.001}
+        width={368.001 / 1.02}
+        height={500.001 / 1.02}
         viewBox="0 0 97.367 132.292"
         className={className}
         {...props}
@@ -537,13 +538,15 @@ const CardTemplate = ({
             y={0}
             href={imageUrl}
             preserveAspectRatio="xMidYMid slice"
-            transform={`translate(${position.x} ${position.y}) scale(${scale})`}
+            transform={`translate(${position.x} ${position.y}) scale(${flip ? -scale : scale}, ${scale})`}
             transformOrigin="center"
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
             onMouseLeave={onMouseLeave}
             onMouseDown={onMouseDown}
-            style={{ cursor: isDragging ? "grabbing" : "grab" }}
+            style={{
+              cursor: isDragging ? "grabbing" : "grab",
+            }}
           />
         </g>
 
