@@ -30,8 +30,8 @@ export default function CardGallery({ cards }) {
               <Image
                 src={card.card_img}
                 alt={`Card image ${index + 1}`}
-                width={300}
-                height={400}
+                width={736}
+                height={1000}
                 className="w-full h-auto object-cover"
                 style={{ userSelect: "none" }}
               />

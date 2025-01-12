@@ -29,8 +29,6 @@ export async function GET() {
       supabase.from("stages").select("*"),
     ]);
 
-    console.log(minionsTest, spellsTest, stagesTest);
-
     const allImages = [...minions.data, ...spells.data, ...stages.data];
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 

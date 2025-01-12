@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
@@ -10,11 +9,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { Slider } from "@/components/ui/slider";
 import CardTemplate from "@components/svg/card-template";
 import Selector from "@components/selector";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import html2canvas from "html2canvas";
 
 export default function CardForm({ images }) {
-  const [classes, setClasses] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [cardImage, setCardImage] = useState(null);
   const [activeTab, setActiveTab] = useState("Minion");
@@ -35,13 +33,18 @@ export default function CardForm({ images }) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [currentImageIndex, setCurrentImageIndex] = useState(() => {
-    const savedIndex = sessionStorage.getItem("currentImageIndex");
-    return savedIndex ? parseInt(savedIndex, 10) : 0;
+    if (typeof window !== "undefined") {
+      const savedIndex = sessionStorage.getItem("currentImageIndex");
+      return savedIndex ? parseInt(savedIndex, 10) : 0;
+    }
+    return 0;
   });
 
   const router = useRouter();
 
   const handleNewCard = function () {
+    console.log("handleNewCard called");
+
     if (!images || images.length === 0) {
       toast({
         title: "Error",
@@ -102,18 +105,26 @@ export default function CardForm({ images }) {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImageFile(file);
-      setCardImage(URL.createObjectURL(file));
+      const imageUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = imageUrl;
+      img.onload = () => {
+        setImageFile(file);
+        setCardImage(imageUrl);
+      };
     }
   };
 
   const validateForm = () => {
     let newErrors = {};
     if (!cardData.CardName.trim()) newErrors.CardName = "(required)";
-    if (activeTab === "Minion" && !cardData.LvL.trim())
+    if (
+      (activeTab === "Minion" || activeTab === "Stage") &&
+      !cardData.LvL.trim()
+    )
       newErrors.LvL = "(required)";
-    if (activeTab !== "Stage" && !cardData.Cost.trim())
-      newErrors.Cost = "(required)";
+    if (!cardData.Cost.trim()) newErrors.Cost = "(required)";
     if (activeTab === "Minion" && !cardData.Attack.trim())
       newErrors.Attack = "(required)";
     if (activeTab === "Minion" && !cardData.Health.trim())
@@ -123,76 +134,139 @@ export default function CardForm({ images }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (!validateForm()) return;
 
     setUploading(true);
 
-    const svgElement = document.querySelector("#card-template");
-    const canvas = await html2canvas(svgElement, {
-      allowTaint: true,
-      useCORS: true,
-    });
-
-    canvas.toBlob(async (blob) => {
-      const formData = new FormData();
-      formData.append("imageFile", blob, "card.png");
-      formData.append("CardName", cardData.CardName);
-      formData.append("CardText", cardData.CardText);
-      formData.append("Class", cardData.Class);
-      formData.append("LvL", cardData.LvL);
-      formData.append("Attack", cardData.Attack);
-      formData.append("Health", cardData.Health);
-      formData.append("Type", activeTab);
-
-      if (activeTab !== "Stage") {
-        formData.append("Cost", cardData.Cost);
+    try {
+      // Get the SVG element directly
+      const svgElement = document.querySelector("#card-template");
+      if (!svgElement) {
+        console.error("SVG element not found");
+        throw new Error("SVG element not found");
       }
 
-      const response = await axios.post("/api/create-card", formData);
+      // Convert the SVG's image href to base64
+      const imageElement = svgElement.querySelector("image");
+      let base64Image = null; // Initialize base64Image
+
+      if (imageElement && imageElement.href.baseVal) {
+        try {
+          console.log(imageElement.href.baseVal);
+          const response = await fetch(imageElement.href.baseVal);
+          const blob = await response.blob();
+          base64Image = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
+
+          imageElement.setAttribute("href", base64Image);
+        } catch (error) {
+          console.error("Error converting image to base64:", error);
+        }
+      }
+
+      // Convert SVG element to base64
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], {
+        type: "image/svg+xml;charset=utf-8",
+      });
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      // Create canvas
+      const canvas = document.createElement("canvas");
+      canvas.width = 368 * 4;
+      canvas.height = 500 * 4;
+      canvas.style.width = 368 * 4 + "px";
+      canvas.style.height = 500 * 4 + "px";
+
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      // Draw SVG as an image on the canvas, then convert to webp
+      const img = new Image();
+      const webpBlob = await new Promise((resolve, reject) => {
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(blob);
+              else reject(new Error("Canvas conversion failed"));
+            },
+            "image/webp",
+            1.0
+          );
+          URL.revokeObjectURL(svgUrl); // clean up
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(svgUrl);
+          reject(new Error("Image loading failed"));
+        };
+        img.src = svgUrl;
+      });
+
+      // Prepare form data
+      const formData = new FormData();
+      if (base64Image) {
+        const imageBlob = await (await fetch(base64Image)).blob();
+        formData.append("image_file", imageBlob, "image.png");
+      }
+      formData.append("scale", imageScale);
+      formData.append("position", JSON.stringify(imagePosition));
+      formData.append("card_file", webpBlob, "card.webp");
+      formData.append("title", cardData.CardName);
+      formData.append("description", cardData.CardText);
+      formData.append("class", cardData.Class);
+      formData.append("level", cardData.LvL);
+      formData.append("attack", cardData.Attack);
+      formData.append("health", cardData.Health);
+      formData.append("type", activeTab);
+      formData.append("cost", cardData.Cost);
+
+      // Send the POST request
+      const response = await axios.post("/api/create-card", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (response.status >= 200 && response.status < 300) {
+        // Ensure any state updates or data fetching is completed here
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Optional delay for server processing
+
+        // Now navigate to the cards-official page
+        router.push("/cards-official");
         toast({
           title: "Success",
           description: "You successfully created a card.",
           variant: "success",
         });
-        router.push("/cards-official");
       } else {
-        const errorData = await response.json();
         toast({
           title: "Error",
-          description:
-            errorData.message || "An error occurred while creating the card.",
+          description: "An error occurred while creating the card.",
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error("Error during submission:", error);
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred during submission.",
+        variant: "destructive",
+      });
       setUploading(false);
-    }, "image/png");
-  };
+    }
+  }
 
   const isDisabled = (field = "") => {
     return (
-      activeTab !== "Minion" &&
-      (field === "LvL" || field === "Attack" || field === "Health")
+      (activeTab !== "Minion" && (field === "Attack" || field === "Health")) ||
+      (activeTab === "Spell" && field === "LvL")
     );
   };
-
-  const fetchClasses = async () => {
-    const response = await fetch("/api/classes", { method: "GET" });
-    return response.json();
-  };
-
-  useEffect(() => {
-    fetchClasses()
-      .then((response) => {
-        setClasses(response.data);
-      })
-      .catch((error) =>
-        console.error("Failed to fetch classes:", error.message)
-      );
-  }, []);
 
   const constrainPosition = (pos, currentScale) => {
     const maxX = (97.367 * currentScale - 97.367) / 2;
@@ -205,6 +279,7 @@ export default function CardForm({ images }) {
   };
 
   const handleMouseDown = (e) => {
+    if (uploading) return;
     setIsDragging(true);
     setDragStart({
       x: e.clientX,
@@ -247,11 +322,14 @@ export default function CardForm({ images }) {
               activeTab === tab
                 ? "bg-black text-white bg-opacity-60"
                 : "bg-black text-gray-300 bg-opacity-30"
-            }`}
+            } ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
             onClick={() => {
-              setActiveTab(tab);
-              setErrors({});
+              if (!uploading) {
+                setActiveTab(tab);
+                setErrors({});
+              }
             }}
+            disabled={uploading}
           >
             {tab}
           </button>
@@ -298,13 +376,7 @@ export default function CardForm({ images }) {
                     disabled={uploading}
                   />
                 </div>
-                <div
-                  className={
-                    uploading || activeTab === "Stage"
-                      ? "opacity-30"
-                      : undefined
-                  }
-                >
+                <div className={uploading ? "opacity-30" : undefined}>
                   <Label>
                     Cost
                     <span className="text-red-400 ml-1">{errors.Cost}</span>
@@ -312,12 +384,12 @@ export default function CardForm({ images }) {
                   <Input
                     name="Cost"
                     type="text"
-                    disabled={uploading || activeTab === "Stage"}
                     placeholder="Cost"
-                    value={activeTab === "Stage" ? "Free Stage" : cardData.Cost}
+                    value={cardData.Cost}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
                     className={errors.Cost && "border-2 border-red-400"}
+                    disabled={uploading}
                   />
                 </div>
                 <div className={uploading ? "opacity-30" : undefined}>
@@ -329,7 +401,7 @@ export default function CardForm({ images }) {
                     <Selector
                       name="Class"
                       placeholder="Blue"
-                      items={classes.map((cls) => cls.name)}
+                      items={["Blue", "Purple"]}
                       value={cardData.Class}
                       onChange={handleSelectorChange}
                       onFocus={handleFocus}
@@ -430,8 +502,6 @@ export default function CardForm({ images }) {
           </div>
           <div className="relative group">
             <CardTemplate
-              id="card-template"
-              className={uploading ? "opacity-30" : undefined}
               imageUrl={cardImage}
               scale={imageScale}
               position={imagePosition}
@@ -442,14 +512,19 @@ export default function CardForm({ images }) {
               onMouseLeave={handleMouseUp}
               cardData={cardData}
               type={activeTab}
+              disabled={uploading}
             />
-            <div className="absolute left-1/2 bottom-[-25px] transform -translate-x-1/2 flex flex-col items-center gap-1.5 p-1.5 px-2.5 backdrop-blur-[1px] rounded-full transition-all duration-300 group-hover:backdrop-blur-[1px]">
+            <div
+              className={`absolute left-1/2 bottom-[-25px] transform -translate-x-1/2 flex flex-col items-center gap-1.5 p-1.5 px-2.5 backdrop-blur-[1px] rounded-full transition-all duration-300 group-hover:backdrop-blur-[1px]
+                ${uploading ? "opacity-30" : undefined}`}
+            >
               <Slider
                 value={[imageScale]}
                 onValueChange={handleScaleChange}
                 min={1}
-                max={3}
-                step={0.1}
+                max={1.5}
+                step={0.01}
+                disabled={uploading}
               />
             </div>
           </div>

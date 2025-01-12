@@ -93,6 +93,8 @@ const CardTemplate = ({
       { pattern: "End of turn", gradient: "f" },
       { pattern: "Delay:", gradient: "f" },
       { pattern: "Delay", gradient: "f" },
+      { pattern: "Double Strike", gradient: "f" },
+      { pattern: "Immune", gradient: "f" },
     ];
 
     lines.forEach((line, lineIndex) => {
@@ -102,7 +104,7 @@ const CardTemplate = ({
           const keywordWidth = getTextWidth(pattern);
           const preTextWidth = getTextWidth(line.substring(0, pos));
 
-          const effectiveX = 48.5 - (getTextWidth(line) / 2 - preTextWidth);
+          const effectiveX = 48.4 - (getTextWidth(line) / 2 - preTextWidth);
           const effectiveY = keywordY + lineIndex * 8;
 
           // Check if a box with the same x and y already exists
@@ -149,19 +151,24 @@ const CardTemplate = ({
       case 1:
         return { keywordY: 93.204, startY: 70.704 };
       case 2:
-        return { keywordY: 89.5, startY: 67.8665 };
+        return { keywordY: 89.3, startY: 67.8665 };
       case 3:
-        return { keywordY: 85.3, startY: 65.029 };
+        return { keywordY: 85, startY: 65.029 };
       case 4:
-        return { keywordY: 84.8, startY: 65.029 };
+        return { keywordY: 85, startY: 65.029 };
       default:
-        return { keywordY: 60.1915, startY: 65.029 };
+        return { keywordY: 85, startY: 65.029 };
     }
   };
 
   const textLines = splitTextIntoLines(cardData.CardText);
   console.log(textLines);
   let { keywordY, startY } = getY(textLines.length);
+
+  if (type === "Minion" && textLines.length == 3 && textLines[2].length < 20) {
+    keywordY += 4.5;
+    startY += 3;
+  }
 
   if (type !== "Minion") {
     keywordY += 4.5;
@@ -171,8 +178,9 @@ const CardTemplate = ({
   const keywordBoxes = getKeywordBoxes(textLines, keywordY);
 
   return (
-    <div className="relative">
+    <div className="relative" id="card-template-svg">
       <svg
+        id="card-template"
         xmlns="http://www.w3.org/2000/svg"
         width={368.001}
         height={500.001}
@@ -598,7 +606,7 @@ const CardTemplate = ({
               strokeWidth: 0.121855,
             }}
           >
-            {type === "Stage" ? "Free Stage" : cardData.Cost}
+            {cardData.Cost}
           </tspan>
         </text>
         <text
@@ -635,7 +643,7 @@ const CardTemplate = ({
                 fontStyle: "normal",
                 fontVariant: "normal",
                 fontWeight: 400,
-                fontStretch: "normal",
+                fontStretch: "expanded", // Changed from normal to expanded
                 fontFamily: "Franklin Gothic Heavy",
                 InkscapeFontSpecification: "&quot",
                 textAlign: "center",
@@ -703,7 +711,7 @@ const CardTemplate = ({
           </tspan>
         </text>
 
-        {type === "Minion" && (
+        {(type === "Minion" || type === "Stage") && (
           <>
             <ellipse
               cx={13.575}
