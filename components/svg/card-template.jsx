@@ -96,6 +96,9 @@ const CardTemplate = ({
       { pattern: "Delay", gradient: "f" },
       { pattern: "Double Strike", gradient: "f" },
       { pattern: "Immune", gradient: "f" },
+      { pattern: "Shield 1", gradient: "f" },
+      { pattern: "Shield 2", gradient: "f" },
+      { pattern: "Shield 3", gradient: "f" },
     ];
 
     lines.forEach((line, lineIndex) => {
@@ -537,7 +540,7 @@ const CardTemplate = ({
             x={0}
             y={0}
             href={imageUrl}
-            preserveAspectRatio="xMidYMid slice"
+            // preserveAspectRatio="xMidYMid"
             transform={`translate(${position.x} ${position.y}) scale(${flip ? -scale : scale}, ${scale})`}
             transformOrigin="center"
             onMouseMove={onMouseMove}
@@ -646,7 +649,7 @@ const CardTemplate = ({
                 fontStyle: "normal",
                 fontVariant: "normal",
                 fontWeight: 400,
-                fontStretch: "expanded", // Changed from normal to expanded
+                fontStretch: "expanded", // Changed from expanded to ultra-expanded
                 fontFamily: "Franklin Gothic Heavy",
                 InkscapeFontSpecification: "&quot",
                 textAlign: "center",

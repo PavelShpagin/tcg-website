@@ -4,14 +4,27 @@ import CardForm from "@components/card-form";
 export default async function CreateCard() {
   // Fetch images from the API and cache them for an hour
   const fetchImages = cache(async () => {
-    const response = await fetch("http://localhost:3000/api/create-card", {
-      headers: { "Cache-Control": "max-age=3600" },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/create-card`,
+      {
+        headers: { "Cache-Control": "max-age=3600" },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
+    }
+
     const data = await response.json();
     return data.images || [];
   });
 
-  const images = await fetchImages();
+  let images = [];
+  try {
+    images = await fetchImages();
+  } catch (error) {
+    console.error("Error fetching images:", error);
+  }
 
   return (
     <div

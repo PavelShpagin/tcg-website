@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
@@ -12,6 +12,11 @@ import Selector from "@components/selector";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { FaArrowsAltH } from "react-icons/fa";
+import {
+  calculateScaleAndPosition,
+  constrainPosition,
+} from "@utils/image-utils";
+import { validateForm, isDisabled } from "@utils/form-utils";
 
 export default function CardForm({ images }) {
   const [imageFile, setImageFile] = useState(null);
@@ -32,21 +37,14 @@ export default function CardForm({ images }) {
   const [imageScale, setImageScale] = useState(1);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [currentImageIndex, setCurrentImageIndex] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedIndex = sessionStorage.getItem("currentImageIndex");
-      return savedIndex ? parseInt(savedIndex, 10) : 0;
-    }
-    return 0;
-  });
   const [isFlipped, setIsFlipped] = useState(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const currentImageIndex = useRef(0);
+  const [minScale, setMinScale] = useState(1);
 
   const router = useRouter();
 
-  const handleNewCard = function () {
-    console.log("handleNewCard called");
-
+  const handleNewCard = () => {
     if (!images || images.length === 0) {
       toast({
         title: "Error",
@@ -56,37 +54,49 @@ export default function CardForm({ images }) {
       return;
     }
 
-    const nextImage = images[currentImageIndex];
-    const newIndex = (currentImageIndex + 1) % images.length;
-    setCurrentImageIndex(newIndex);
+    const nextImage = images[currentImageIndex.current];
+
+    if (isNaN(currentImageIndex.current)) {
+      currentImageIndex.current = 0;
+    } else {
+      currentImageIndex.current++;
+    }
+    const newIndex = currentImageIndex.current % images.length;
+    currentImageIndex.current = newIndex;
     sessionStorage.setItem("currentImageIndex", newIndex);
 
-    setCardImage(nextImage.url);
-    setImageFile(
-      new File([], nextImage.name, {
-        type: `image/${nextImage.url.split(".").pop()}`,
-      })
-    );
-    setActiveTab(nextImage.type);
-    setCardData({
-      CardName: "",
-      LvL: "",
-      Cost: "",
-      Attack: "",
-      Health: "",
-      CardText: "",
-      Class: nextImage.class,
-    });
-    setImageScale(1);
-    setImagePosition({ x: 0, y: 0 });
-    setErrors({});
-  };
+    const img = new Image();
+    img.src = nextImage.url;
+    img.onload = () => {
+      const { scale, position } = calculateScaleAndPosition(
+        img.width,
+        img.height,
+        368,
+        500
+      );
 
-  useEffect(() => {
-    if (images?.length > 0) {
-      handleNewCard();
-    }
-  }, [images]);
+      setCardImage(nextImage.url);
+      setImageFile(
+        new File([], nextImage.name, {
+          type: `image/${nextImage.url.split(".").pop()}`,
+        })
+      );
+      setActiveTab(nextImage.type);
+      setCardData({
+        CardName: "",
+        LvL: "",
+        Cost: "",
+        Attack: "",
+        Health: "",
+        CardText: "",
+        Class: nextImage.class,
+      });
+      setMinScale(scale);
+      setImageScale(scale);
+      setImagePosition(position);
+      setErrors({});
+    };
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -112,33 +122,26 @@ export default function CardForm({ images }) {
       img.crossOrigin = "anonymous";
       img.src = imageUrl;
       img.onload = () => {
+        const { scale, position } = calculateScaleAndPosition(
+          img.width,
+          img.height,
+          368,
+          500
+        );
         setImageFile(file);
         setCardImage(imageUrl);
+        setMinScale(scale);
+        setImageScale(scale);
+        setImagePosition(position);
       };
     }
   };
 
-  const validateForm = () => {
-    let newErrors = {};
-    if (!cardData.CardName.trim()) newErrors.CardName = "(required)";
-    if (
-      (activeTab === "Minion" || activeTab === "Stage") &&
-      !cardData.LvL.trim()
-    )
-      newErrors.LvL = "(required)";
-    if (!cardData.Cost.trim()) newErrors.Cost = "(required)";
-    if (activeTab === "Minion" && !cardData.Attack.trim())
-      newErrors.Attack = "(required)";
-    if (activeTab === "Minion" && !cardData.Health.trim())
-      newErrors.Health = "(required)";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!validateForm()) return;
+    const newErrors = validateForm(cardData, activeTab);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length !== 0) return;
 
     setUploading(true);
 
@@ -152,11 +155,10 @@ export default function CardForm({ images }) {
 
       // Convert the SVG's image href to base64
       const imageElement = svgElement.querySelector("image");
-      let base64Image = null; // Initialize base64Image
+      let base64Image = null;
 
       if (imageElement && imageElement.href.baseVal) {
         try {
-          console.log(imageElement.href.baseVal);
           const response = await fetch(imageElement.href.baseVal);
           const blob = await response.blob();
           base64Image = await new Promise((resolve) => {
@@ -202,7 +204,7 @@ export default function CardForm({ images }) {
             "image/webp",
             1.0
           );
-          URL.revokeObjectURL(svgUrl); // clean up
+          URL.revokeObjectURL(svgUrl);
         };
         img.onerror = () => {
           URL.revokeObjectURL(svgUrl);
@@ -212,7 +214,7 @@ export default function CardForm({ images }) {
       });
 
       // Prepare form data
-      const formData = new FormData();
+      const formData = new FormData(event.target);
       if (base64Image) {
         const imageBlob = await (await fetch(base64Image)).blob();
         formData.append("image_file", imageBlob, "image.png");
@@ -236,15 +238,14 @@ export default function CardForm({ images }) {
 
       if (response.status >= 200 && response.status < 300) {
         // Ensure any state updates or data fetching is completed here
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Optional delay for server processing
+        // await new Promise((resolve) => setTimeout(resolve, 5000)); // Optional delay for server processing
 
-        // Now navigate to the cards-official page
-        router.push("/cards-official");
         toast({
           title: "Success",
           description: "You successfully created a card.",
           variant: "success",
         });
+        router.push("/cards-official");
       } else {
         toast({
           title: "Error",
@@ -253,7 +254,6 @@ export default function CardForm({ images }) {
         });
       }
     } catch (error) {
-      console.error("Error during submission:", error);
       toast({
         title: "Error",
         description: error.message || "An error occurred during submission.",
@@ -261,44 +261,27 @@ export default function CardForm({ images }) {
       });
       setUploading(false);
     }
-  }
-
-  const isDisabled = (field = "") => {
-    return (
-      (activeTab !== "Minion" && (field === "Attack" || field === "Health")) ||
-      (activeTab === "Spell" && field === "LvL")
-    );
-  };
-
-  const constrainPosition = (pos, currentScale) => {
-    const maxX = (97.367 * currentScale - 97.367) / 2;
-    const maxY = (132.292 * currentScale - 132.292) / 2;
-
-    return {
-      x: Math.max(-maxX, Math.min(maxX, pos.x)),
-      y: Math.max(-maxY, Math.min(maxY, pos.y)),
-    };
   };
 
   const handleMouseDown = (e) => {
     if (uploading) return;
     setIsDragging(true);
-    setDragStart({
+    dragStart.current = {
       x: e.clientX,
       y: e.clientY,
       initialX: imagePosition.x,
       initialY: imagePosition.y,
-    });
+    };
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      const deltaX = (e.clientX - dragStart.x) * 0.05;
-      const deltaY = (e.clientY - dragStart.y) * 0.05;
+      const deltaX = (e.clientX - dragStart.current.x) * 0.05;
+      const deltaY = (e.clientY - dragStart.current.y) * 0.05;
 
       const newPosition = {
-        x: dragStart.initialX + deltaX,
-        y: dragStart.initialY + deltaY,
+        x: dragStart.current.initialX + deltaX,
+        y: dragStart.current.initialY + deltaY,
       };
 
       setImagePosition(constrainPosition(newPosition, imageScale));
@@ -317,6 +300,12 @@ export default function CardForm({ images }) {
   const handleFlip = () => {
     setIsFlipped((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (images?.length > 0) {
+      handleNewCard();
+    }
+  }, [images]);
 
   return (
     <div>
@@ -343,11 +332,13 @@ export default function CardForm({ images }) {
       </div>
       <div className="bg-black bg-opacity-60 backdrop-blur-xl pl-10 pt-10 pr-10 pb-3 rounded-3xl shadow-lg flex space-x-10">
         <div className="flex flex-col space-y-4">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div
                 className={
-                  uploading || isDisabled("LvL") ? "opacity-30" : undefined
+                  uploading || isDisabled(activeTab, "LvL")
+                    ? "opacity-30"
+                    : undefined
                 }
               >
                 <Label>
@@ -358,7 +349,7 @@ export default function CardForm({ images }) {
                   name="LvL"
                   type="number"
                   placeholder="LvL"
-                  disabled={uploading || isDisabled("LvL")}
+                  disabled={uploading || isDisabled(activeTab, "LvL")}
                   value={cardData.LvL}
                   onChange={handleInputChange}
                   onFocus={handleFocus}
@@ -429,7 +420,9 @@ export default function CardForm({ images }) {
             <div className="grid grid-cols-2 gap-4">
               <div
                 className={
-                  uploading || isDisabled("Attack") ? "opacity-30" : undefined
+                  uploading || isDisabled(activeTab, "Attack")
+                    ? "opacity-30"
+                    : undefined
                 }
               >
                 <Label>
@@ -440,7 +433,7 @@ export default function CardForm({ images }) {
                   name="Attack"
                   type="number"
                   placeholder="Attack"
-                  disabled={isDisabled("Attack")}
+                  disabled={isDisabled(activeTab, "Attack")}
                   value={cardData.Attack}
                   onChange={handleInputChange}
                   onFocus={handleFocus}
@@ -449,7 +442,9 @@ export default function CardForm({ images }) {
               </div>
               <div
                 className={
-                  uploading || isDisabled("Health") ? "opacity-30" : undefined
+                  uploading || isDisabled(activeTab, "Health")
+                    ? "opacity-30"
+                    : undefined
                 }
               >
                 <Label>
@@ -460,7 +455,7 @@ export default function CardForm({ images }) {
                   name="Health"
                   type="number"
                   placeholder="Health"
-                  disabled={isDisabled("Health") || uploading}
+                  disabled={isDisabled(activeTab, "Health") || uploading}
                   value={cardData.Health}
                   onChange={handleInputChange}
                   onFocus={handleFocus}
@@ -487,9 +482,9 @@ export default function CardForm({ images }) {
           </form>
           <div className="flex space-x-4">
             <Button
+              type="submit"
               size="md"
               className="font-semibold"
-              onClick={handleSubmit}
               disabled={uploading}
             >
               Submit
@@ -519,6 +514,8 @@ export default function CardForm({ images }) {
             type={activeTab}
             disabled={uploading}
             flip={isFlipped}
+            //viewBox="0 0 368 500"
+            // preserveAspectRatio="xMidYMid meet"
           />
 
           <div className="flex justify-center items-center space-x-2 mt-2.5">
@@ -533,8 +530,8 @@ export default function CardForm({ images }) {
               <Slider
                 value={[imageScale]}
                 onValueChange={handleScaleChange}
-                min={1}
-                max={1.5}
+                min={minScale}
+                max={minScale + 0.5}
                 step={0.01}
                 disabled={uploading}
               />

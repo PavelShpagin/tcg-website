@@ -1,5 +1,4 @@
-"use server";
-
+import "server-only";
 import { createClient } from "@/utils/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 import { revalidatePath } from "next/cache";
