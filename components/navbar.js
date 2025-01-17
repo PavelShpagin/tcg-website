@@ -4,12 +4,12 @@ import { Button } from "@components/ui/button";
 
 const Navbar = () => {
   return (
-    <nav className="fixed z-40 top-8 mx-12 left-0 right-0 px-12 py-2 bg-black bg-opacity-20 backdrop-blur-xl rounded-full shadow-lg">
+    <nav>
       <div className="max-w-8xl mx-auto flex items-center justify-between">
         <div className="flex items-center h-16">
           <Link href="/">
             <Image
-              className="mr-4 hover:brightness-125 duration-200 ease-in-out"
+              className="mr-4 brightness-[120%] hover:brightness-[140%] duration-200 ease-in-out"
               src="/logo.png"
               alt="Logo"
               width={130}
@@ -18,34 +18,19 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center space-x-10">
-          <Link
-            href="/rules"
-            className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
-          >
+          <Link href="/rules" className="navbar-link">
             Rules
           </Link>
-          <Link
-            href="/cards-official"
-            className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
-          >
+          <Link href="/cards-official" className="navbar-link">
             Cards
           </Link>
-          <Link
-            href="/news"
-            className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
-          >
+          <Link href="/news" className="navbar-link">
             News
           </Link>
-          <Link
-            href="/community"
-            className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
-          >
+          <Link href="/community" className="navbar-link">
             Community
           </Link>
-          <Link
-            href="/create-card"
-            className="text-gray-300 hover:bg-black hover:bg-opacity-25 hover:text-white px-5 py-3 rounded-full text-xl font-bold transition duration-200 ease-in-out"
-          >
+          <Link href="/create-card" className="navbar-link">
             Create
           </Link>
         </div>

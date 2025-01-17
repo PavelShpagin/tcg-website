@@ -38,9 +38,11 @@ export default function CardForm({ images }) {
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [minScale, setMinScale] = useState(1);
   const dragStart = useRef({ x: 0, y: 0 });
   const currentImageIndex = useRef(0);
-  const [minScale, setMinScale] = useState(1);
+  const imageWidth = useRef(0);
+  const imageHeight = useRef(0);
 
   const router = useRouter();
 
@@ -68,6 +70,8 @@ export default function CardForm({ images }) {
     const img = new Image();
     img.src = nextImage.url;
     img.onload = () => {
+      imageWidth.current = img.width;
+      imageHeight.current = img.height;
       const { scale, position } = calculateScaleAndPosition(
         img.width,
         img.height,
@@ -122,6 +126,8 @@ export default function CardForm({ images }) {
       img.crossOrigin = "anonymous";
       img.src = imageUrl;
       img.onload = () => {
+        imageWidth.current = img.width;
+        imageHeight.current = img.height;
         const { scale, position } = calculateScaleAndPosition(
           img.width,
           img.height,
@@ -232,9 +238,13 @@ export default function CardForm({ images }) {
       formData.append("cost", cardData.Cost);
 
       // Send the POST request
-      const response = await axios.post("/api/create-card", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`, 
+        formData, 
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       if (response.status >= 200 && response.status < 300) {
         // Ensure any state updates or data fetching is completed here
@@ -284,7 +294,7 @@ export default function CardForm({ images }) {
         y: dragStart.current.initialY + deltaY,
       };
 
-      setImagePosition(constrainPosition(newPosition, imageScale));
+      setImagePosition(constrainPosition(newPosition, imageScale, imageWidth.current, imageHeight.current, 368, 500));
     }
   };
 
@@ -294,7 +304,7 @@ export default function CardForm({ images }) {
 
   const handleScaleChange = ([value]) => {
     setImageScale(value);
-    setImagePosition((prevPosition) => constrainPosition(prevPosition, value));
+    setImagePosition((prevPosition) => constrainPosition(prevPosition, value, imageWidth.current, imageHeight.current, 368, 500));
   };
 
   const handleFlip = () => {

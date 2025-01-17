@@ -15,13 +15,12 @@ const shuffleArray = (array) => {
 export default function ImagePreloader() {
   useEffect(() => {
     const loadImages = async () => {
-      // Skip if already cached
       if (sessionStorage.getItem("cardImages")) {
         return;
       }
 
       try {
-        const response = await fetch("/api/card-images");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/card-images`);
         const data = await response.json();
         if (data.images) {
           const shuffledImages = shuffleArray(data.images);

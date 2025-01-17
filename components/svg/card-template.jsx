@@ -1,5 +1,11 @@
 "use client";
 import React from "react";
+import localFont from "next/font/local";
+
+const franklinGothic = localFont({
+  src: "../../app/fonts/FranklinGothic-Heavy.woff2",
+  display: "swap",
+});
 
 const CardTemplate = ({
   className,
@@ -66,7 +72,7 @@ const CardTemplate = ({
   const getTextWidth = (
     text,
     fontSize = "7.04109px",
-    fontFamily = "Franklin Gothic Heavy"
+    fontFamily = franklinGothic.style.fontFamily
   ) => {
     // Create canvas element if it doesn't exist
     const canvas = document.createElement("canvas");
@@ -586,7 +592,7 @@ const CardTemplate = ({
             fontStretch: "normal",
             fontSize: "4.87421px",
             lineHeight: 1.25,
-            fontFamily: "Franklin Gothic Heavy",
+            fontFamily: franklinGothic.style.fontFamily,
             InkscapeFontSpecification: "&quot",
             fill: "#fff",
             fillOpacity: 1,
@@ -603,7 +609,7 @@ const CardTemplate = ({
               fontVariant: "normal",
               fontWeight: 400,
               fontStretch: "normal",
-              fontFamily: "Franklin Gothic Heavy",
+              fontFamily: franklinGothic.style.fontFamily,
               InkscapeFontSpecification: "&quot",
               textAlign: "center",
               textAnchor: "middle",
@@ -626,7 +632,7 @@ const CardTemplate = ({
             fontStretch: "normal",
             fontSize: "4.54004px",
             lineHeight: 1.25,
-            fontFamily: "Franklin Gothic Heavy",
+            fontFamily: franklinGothic.style.fontFamily,
             InkscapeFontSpecification: "&quot",
             fill: "#fff",
             fillOpacity: 1,
@@ -650,7 +656,7 @@ const CardTemplate = ({
                 fontVariant: "normal",
                 fontWeight: 400,
                 fontStretch: "expanded", // Changed from expanded to ultra-expanded
-                fontFamily: "Franklin Gothic Heavy",
+                fontFamily: franklinGothic.style.fontFamily,
                 InkscapeFontSpecification: "&quot",
                 textAlign: "center",
                 textAnchor: "middle",
@@ -680,7 +686,7 @@ const CardTemplate = ({
             fontStretch: "normal",
             fontSize: "6.19046px",
             lineHeight: 1.25,
-            fontFamily: "Franklin Gothic Heavy",
+            fontFamily: franklinGothic.style.fontFamily,
             InkscapeFontSpecification: "&quot",
             fill: "#fff",
             fillOpacity: 1,
@@ -700,7 +706,7 @@ const CardTemplate = ({
               fontVariant: "normal",
               fontWeight: 400,
               fontStretch: "normal",
-              fontFamily: "Franklin Gothic Heavy",
+              fontFamily: franklinGothic.style.fontFamily,
               InkscapeFontSpecification: "&quot",
               textAlign: "center",
               textAnchor: "middle",
@@ -751,7 +757,7 @@ const CardTemplate = ({
                 fontStretch: "normal",
                 fontSize: "5.43197px",
                 lineHeight: 1.25,
-                fontFamily: "Franklin Gothic Heavy",
+                fontFamily: franklinGothic.style.fontFamily,
                 InkscapeFontSpecification: "&quot",
                 fill: "#fff",
                 fillOpacity: 1,
@@ -775,7 +781,7 @@ const CardTemplate = ({
                   fontVariant: "normal",
                   fontWeight: 400,
                   fontStretch: "normal",
-                  fontFamily: "Franklin Gothic Heavy",
+                  fontFamily: franklinGothic.style.fontFamily,
                   InkscapeFontSpecification: "&quot",
                   fill: "#fff",
                   fillOpacity: 1,
@@ -803,7 +809,7 @@ const CardTemplate = ({
                 fontStretch: "normal",
                 fontSize: "7.04109px",
                 lineHeight: 1.25,
-                fontFamily: "Franklin Gothic Heavy",
+                fontFamily: franklinGothic.style.fontFamily,
                 InkscapeFontSpecification: "&quot",
                 fill: "#fff",
                 fillOpacity: 1,
@@ -826,7 +832,7 @@ const CardTemplate = ({
                   fontVariant: "normal",
                   fontWeight: 400,
                   fontStretch: "normal",
-                  fontFamily: "Franklin Gothic Heavy",
+                  fontFamily: franklinGothic.style.fontFamily,
                   InkscapeFontSpecification: "&quot",
                   fill: "#fff",
                   fillOpacity: 1,
@@ -880,7 +886,7 @@ const CardTemplate = ({
                 fontStretch: "normal",
                 fontSize: "7.04109px",
                 lineHeight: 1.25,
-                fontFamily: "Franklin Gothic Heavy",
+                fontFamily: franklinGothic.style.fontFamily,
                 InkscapeFontSpecification: "&quot",
                 fill: "#fff",
                 fillOpacity: 1,
@@ -903,7 +909,7 @@ const CardTemplate = ({
                   fontVariant: "normal",
                   fontWeight: 400,
                   fontStretch: "normal",
-                  fontFamily: "Franklin Gothic Heavy",
+                  fontFamily: franklinGothic.style.fontFamily,
                   InkscapeFontSpecification: "&quot",
                   textAnchor: "middle",
                   fill: "#fff",
@@ -953,7 +959,7 @@ const CardTemplate = ({
                 fontStretch: "normal",
                 fontSize: "7.04109px",
                 lineHeight: 1.25,
-                fontFamily: "Franklin Gothic Heavy",
+                fontFamily: franklinGothic.style.fontFamily,
                 InkscapeFontSpecification: "&quot",
                 textAnchor: "middle",
                 fill: "#fff",
@@ -977,7 +983,7 @@ const CardTemplate = ({
                   fontVariant: "normal",
                   fontWeight: 400,
                   fontStretch: "normal",
-                  fontFamily: "Franklin Gothic Heavy",
+                  fontFamily: franklinGothic.style.fontFamily,
                   InkscapeFontSpecification: "&quot",
                   textAnchor: "middle",
                   fill: "#fff",

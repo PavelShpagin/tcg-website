@@ -46,4 +46,52 @@
     @apply bg-background text-foreground;
     overflow-x: hidden;
   }
+
+  nav {
+    @apply fixed z-40 top-8 mx-12 left-0 right-0 px-12 py-1;
+    background-color: rgba(107, 112, 121, 0.5);
+    @apply backdrop-blur-lg rounded-xl shadow-xl border-[3px];
+    border-color: rgba(243, 244, 246, 0.35);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+
+  nav:hover {
+    background-color: rgba(107, 112, 121, 0.55);
+  }
+
+  .navbar-link {
+    @apply text-gray-300 hover:text-white px-2 text-lg font-bold;
+    @apply transition duration-300 ease-in-out;
+    border: 2.5px solid transparent;
+    margin: 0.5rem;
+  }
+
+  .navbar-link:hover {
+    transform: scale(1.04);
+    border-color: rgba(230, 230, 230, 0.6);
+  }
+}
+
+@layer utilities {
+  .drop-shadow-main {
+    text-shadow:
+      1px 1px 2px #696969,
+      /* dim gray */
+      1px 1px 10px #708090,
+      /* slate gray */
+      1px 1px 18px #2F4F4F,
+      /* dark slate gray */
+      1px 1px 25px #000000;
+    /* black */
+  }
+
+  .navbar-link {
+    @apply text-gray-300 hover:bg-gray-300 hover:bg-opacity-25 hover:text-white px-5 rounded-xl text-xl font-bold transition duration-300 ease-in-out;
+    @apply sm:text-lg sm:px-4 sm:py-2 md:text-xl md:px-5 md:py-3 lg:text-2xl lg:px-6 lg:py-4 xl:text-[1.5rem] xl:px-4 xl:py-2 2xl:text-4xl 2xl:px-8 2xl:py-6;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+
+  .navbar-link:hover {
+    color: #f0f0f0;
+  }
 }

@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 const buttonStyles = `
   relative inline-flex items-center justify-center font-bold text-white text-lg
   bg-gradient-to-r from-indigo-800 via-purple-700 to-indigo-800
-  border-2 border-purple-300/40 hover:border-purple-200/60
+  border-[2.5px] border-purple-300/40 hover:border-purple-200/60
   py-3 px-8 rounded-xl
   transition-all duration-300 ease-out
   shadow-[0_0_15px_rgba(147,51,234,0.4)] hover:shadow-[0_0_25px_rgba(147,51,234,0.6)]

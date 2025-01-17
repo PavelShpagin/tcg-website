@@ -1,7 +1,7 @@
 import CardGallery from "@components/card-gallery";
 
 export default async function CardsOfficial() {
-  const response = await fetch("http://localhost:3000/api/cards-official", {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cards-official`, {
     cache: "no-store",
   });
   const cards = await response.json();
