@@ -35,12 +35,10 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center">
-          <Button
-            size="lg"
-            className="text-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 font-bold py-3 px-6 transition duration-200 ease-in-out"
-          >
-            Log out
+          <Button className="button-login">
+            Log In
           </Button>
+          {/*
           <div className="ml-5">
             <svg
               className="h-8 w-8 text-gray-300"
@@ -55,7 +53,7 @@ const Navbar = () => {
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               />
             </svg>
-          </div>
+          </div>*/}
         </div>
       </div>
     </nav>

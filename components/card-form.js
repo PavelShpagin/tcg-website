@@ -342,173 +342,176 @@ export default function CardForm({ images }) {
       </div>
       <div className="bg-black bg-opacity-60 backdrop-blur-xl pl-10 pt-10 pr-10 pb-3 rounded-3xl shadow-lg flex space-x-10">
         <div className="flex flex-col space-y-4">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">
-              <div
-                className={
-                  uploading || isDisabled(activeTab, "LvL")
-                    ? "opacity-30"
-                    : undefined
-                }
-              >
-                <Label>
-                  LvL
-                  <span className="text-red-400 ml-1">{errors.LvL}</span>
-                </Label>
-                <Input
-                  name="LvL"
-                  type="number"
-                  placeholder="LvL"
-                  disabled={uploading || isDisabled(activeTab, "LvL")}
-                  value={cardData.LvL}
-                  onChange={handleInputChange}
-                  onFocus={handleFocus}
-                  className={errors.LvL && "border-2 border-red-400"}
-                />
-              </div>
-              <div className={uploading ? "opacity-30" : undefined}>
-                <Label>
-                  Card Name
-                  <span className="text-red-400 ml-1">{errors.CardName}</span>
-                </Label>
-                <Input
-                  name="CardName"
-                  type="text"
-                  placeholder="Enter card name"
-                  value={cardData.CardName}
-                  onChange={handleInputChange}
-                  onFocus={handleFocus}
-                  className={errors.CardName && "border-2 border-red-400"}
-                  disabled={uploading}
-                />
-              </div>
-              <div className={uploading ? "opacity-30" : undefined}>
-                <Label>
-                  Cost
-                  <span className="text-red-400 ml-1">{errors.Cost}</span>
-                </Label>
-                <Input
-                  name="Cost"
-                  type="text"
-                  placeholder="Cost"
-                  value={cardData.Cost}
-                  onChange={handleInputChange}
-                  onFocus={handleFocus}
-                  className={errors.Cost && "border-2 border-red-400"}
-                  disabled={uploading}
-                />
-              </div>
-              <div className={uploading ? "opacity-30" : undefined}>
-                <Label>
-                  Class
-                  <span className="text-red-400 ml-1">{errors.Class}</span>
-                </Label>
-                {cardData.Class && (
-                  <Selector
-                    name="Class"
-                    placeholder="Blue"
-                    items={["Blue", "Purple"]}
-                    value={cardData.Class}
-                    onChange={handleSelectorChange}
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div
+                  className={
+                    uploading || isDisabled(activeTab, "LvL")
+                      ? "opacity-30"
+                      : undefined
+                  }
+                >
+                  <Label>
+                    LvL
+                    <span className="text-red-400 ml-1">{errors.LvL}</span>
+                  </Label>
+                  <Input
+                    name="LvL"
+                    type="number"
+                    placeholder="LvL"
+                    disabled={uploading || isDisabled(activeTab, "LvL")}
+                    value={cardData.LvL}
+                    onChange={handleInputChange}
                     onFocus={handleFocus}
+                    className={errors.LvL && "border-2 border-red-400"}
+                  />
+                </div>
+                <div className={uploading ? "opacity-30" : undefined}>
+                  <Label>
+                    Card Name
+                    <span className="text-red-400 ml-1">{errors.CardName}</span>
+                  </Label>
+                  <Input
+                    name="CardName"
+                    type="text"
+                    placeholder="Enter card name"
+                    value={cardData.CardName}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    className={errors.CardName && "border-2 border-red-400"}
                     disabled={uploading}
                   />
-                )}
+                </div>
+                <div className={uploading ? "opacity-30" : undefined}>
+                  <Label>
+                    Cost
+                    <span className="text-red-400 ml-1">{errors.Cost}</span>
+                  </Label>
+                  <Input
+                    name="Cost"
+                    type="text"
+                    placeholder="Cost"
+                    value={cardData.Cost}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    className={errors.Cost && "border-2 border-red-400"}
+                    disabled={uploading}
+                  />
+                </div>
+                <div className={uploading ? "opacity-30" : undefined}>
+                  <Label>
+                    Class
+                    <span className="text-red-400 ml-1">{errors.Class}</span>
+                  </Label>
+                  {cardData.Class && (
+                    <Selector
+                      name="Class"
+                      placeholder="Blue"
+                      items={["Blue", "Purple"]}
+                      value={cardData.Class}
+                      onChange={handleSelectorChange}
+                      onFocus={handleFocus}
+                      disabled={uploading}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className={uploading ? "opacity-30" : undefined}>
-              <Label>Card Text</Label>
-              <Textarea
-                name="CardText"
-                rows="3"
-                placeholder="Enter card text"
-                value={cardData.CardText}
-                onChange={handleInputChange}
-                disabled={uploading}
-              ></Textarea>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div
-                className={
-                  uploading || isDisabled(activeTab, "Attack")
-                    ? "opacity-30"
-                    : undefined
-                }
-              >
-                <Label>
-                  Attack
-                  <span className="text-red-400 ml-1">{errors.Attack}</span>
-                </Label>
-                <Input
-                  name="Attack"
-                  type="number"
-                  placeholder="Attack"
-                  disabled={isDisabled(activeTab, "Attack")}
-                  value={cardData.Attack}
+              <div className={uploading ? "opacity-30" : undefined}>
+                <Label>Card Text</Label>
+                <Textarea
+                  name="CardText"
+                  rows="3"
+                  placeholder="Enter card text"
+                  value={cardData.CardText}
                   onChange={handleInputChange}
-                  onFocus={handleFocus}
-                  className={errors.Attack && "border-2 border-red-400"}
-                />
+                  disabled={uploading}
+                ></Textarea>
               </div>
-              <div
-                className={
-                  uploading || isDisabled(activeTab, "Health")
-                    ? "opacity-30"
-                    : undefined
-                }
-              >
-                <Label>
-                  Health
-                  <span className="text-red-400 ml-1">{errors.Health}</span>
-                </Label>
-                <Input
-                  name="Health"
-                  type="number"
-                  placeholder="Health"
-                  disabled={isDisabled(activeTab, "Health") || uploading}
-                  value={cardData.Health}
-                  onChange={handleInputChange}
-                  onFocus={handleFocus}
+              <div className="grid grid-cols-2 gap-4">
+                <div
                   className={
-                    errors.Health ? "border-2 border-red-400" : undefined
+                    uploading || isDisabled(activeTab, "Attack")
+                      ? "opacity-30"
+                      : undefined
                   }
+                >
+                  <Label>
+                    Attack
+                    <span className="text-red-400 ml-1">{errors.Attack}</span>
+                  </Label>
+                  <Input
+                    name="Attack"
+                    type="number"
+                    placeholder="Attack"
+                    disabled={isDisabled(activeTab, "Attack")}
+                    value={cardData.Attack}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    className={errors.Attack && "border-2 border-red-400"}
+                  />
+                </div>
+                <div
+                  className={
+                    uploading || isDisabled(activeTab, "Health")
+                      ? "opacity-30"
+                      : undefined
+                  }
+                >
+                  <Label>
+                    Health
+                    <span className="text-red-400 ml-1">{errors.Health}</span>
+                  </Label>
+                  <Input
+                    name="Health"
+                    type="number"
+                    placeholder="Health"
+                    disabled={isDisabled(activeTab, "Health") || uploading}
+                    value={cardData.Health}
+                    onChange={handleInputChange}
+                    onFocus={handleFocus}
+                    className={
+                      errors.Health ? "border-2 border-red-400" : undefined
+                    }
+                  />
+                </div>
+              </div>
+              <div
+                className={`grid w-full max-w-sm gap-1.5 ${
+                  uploading ? "opacity-30" : undefined
+                }`}
+              >
+                <Label>Upload Image</Label>
+                <Input
+                  type="file"
+                  className="font-medium text-white [&::file-selector-button]:text-gray-300 text-opacity-100 font-bold"
+                  onChange={handleImageChange}
+                  onFocus={handleFocus}
+                  disabled={uploading}
                 />
               </div>
-            </div>
-            <div
-              className={`grid w-full max-w-sm gap-1.5 ${
-                uploading ? "opacity-30" : undefined
-              }`}
-            >
-              <Label>Upload Image</Label>
-              <Input
-                type="file"
-                className="font-medium text-white [&::file-selector-button]:text-gray-300 text-opacity-100 font-bold"
-                onChange={handleImageChange}
-                onFocus={handleFocus}
-                disabled={uploading}
-              />
+              <div className="flex space-x-4">
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  size="md"
+                  className="font-semibold"
+                  disabled={uploading}
+                >
+                  Submit
+                </Button>
+                <Button
+                  size="md"
+                  variant="outline"
+                  className="font-semibold"
+                  onClick={handleNewCard}
+                  disabled={uploading}
+                >
+                  New
+                </Button>
+              </div>
             </div>
           </form>
-          <div className="flex space-x-4">
-            <Button
-              type="submit"
-              size="md"
-              className="font-semibold"
-              disabled={uploading}
-            >
-              Submit
-            </Button>
-            <Button
-              size="md"
-              variant="outline"
-              className="font-semibold"
-              onClick={handleNewCard}
-              disabled={uploading}
-            >
-              New
-            </Button>
-          </div>
         </div>
         <div className="flex flex-col justify-center relative group">
           <CardTemplate

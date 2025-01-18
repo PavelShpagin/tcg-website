@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import ButtonPurple from "@components/button-purple";
+import { Button } from "@components/ui/button";
 import { IM_Fell_English } from "next/font/google";
 import { FaDiscord } from "react-icons/fa";
 import { cn } from "@/lib/utils";
@@ -56,10 +56,10 @@ export default async function Home() {
         </h2>
 
         <Link href="https://discord.gg/yourdiscordlink" className="mt-8">
-          <ButtonPurple>
+          <Button className="button-purple">
             <FaDiscord className="mr-2" />
             Join Discord
-          </ButtonPurple>
+          </Button>
         </Link>
       </div>
     </div>

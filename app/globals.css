@@ -48,15 +48,11 @@
   }
 
   nav {
-    @apply fixed z-40 top-8 mx-12 left-0 right-0 px-12 py-1;
+    @apply fixed z-40 top-8 mx-12 left-0 right-0 px-6 py-1;
     background-color: rgba(107, 112, 121, 0.5);
     @apply backdrop-blur-lg rounded-xl shadow-xl border-[3px];
     border-color: rgba(243, 244, 246, 0.35);
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  }
-
-  nav:hover {
-    background-color: rgba(107, 112, 121, 0.55);
   }
 
   .navbar-link {
@@ -93,5 +89,33 @@
 
   .navbar-link:hover {
     color: #f0f0f0;
+  }
+
+  /* Specific styles for the purple button */
+  .button-purple {
+    @apply text-white py-3 px-6;
+    @apply bg-gradient-to-r from-indigo-800 via-purple-700 to-indigo-800;
+    @apply border-[2.5px] border-purple-300/40 hover:border-purple-200/60;
+    @apply shadow-custom-purple hover:shadow-custom-purple-hover;
+    @apply backdrop-blur-sm;
+    @apply hover:-translate-y-0.5;
+    @apply before:absolute before:inset-0;
+    @apply before:bg-gradient-to-r before:from-purple-500/30 before:to-indigo-500/30;
+    @apply before:rounded-xl before:opacity-0;
+    @apply before:transition-opacity before:duration-300;
+    @apply hover:before:opacity-100;
+    @apply after:absolute after:inset-0;
+    @apply after:bg-[url('https://assets.codepen.io/13471/sparkles.gif')];
+    @apply after:bg-cover after:opacity-60;
+    @apply after:rounded-xl after:mix-blend-soft-light;
+    @apply active:scale-95 active:shadow-inner;
+  }
+
+  /* Specific styles for the login button */
+  .button-login {
+    @apply text-gray-300 py-2 px-6;
+    @apply bg-white bg-opacity-15 hover:bg-opacity-30;
+    @apply border-[2.75px] border-gray-300/40 hover:border-gray-300/60;
+    @apply active:scale-95;
   }
 }

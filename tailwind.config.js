@@ -75,6 +75,10 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        "custom-purple": "0 0 15px rgba(147, 51, 234, 0.4)",
+        "custom-purple-hover": "0 0 25px rgba(147, 51, 234, 0.6)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
