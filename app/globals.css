@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
 
     --card: 224 71.4% 4.1%;
@@ -28,12 +27,14 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
 
-    --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
 
     --red: 215 27.9% 16.9%;
     --red-foreground: 210 20% 98%;
+
+    --background: rgba(107, 112, 121, 0.5);
+    --border: rgba(243, 244, 246, 0.35);
   }
 }
 
@@ -48,11 +49,13 @@
   }
 
   nav {
-    @apply fixed z-40 top-8 mx-12 left-0 right-0 px-6 py-1;
-    background-color: rgba(107, 112, 121, 0.5);
+    @apply fixed z-40 top-8 mx-12 left-0 right-0;
+    background-color: var(--background);
     @apply backdrop-blur-lg rounded-xl shadow-xl border-[3px];
-    border-color: rgba(243, 244, 246, 0.35);
+    border-color: var(--border);
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    @apply py-1;
+    @apply md:px-5 2xl:px-8;
   }
 
   .navbar-link {
@@ -60,6 +63,8 @@
     @apply transition duration-300 ease-in-out;
     border: 2.5px solid transparent;
     margin: 0.5rem;
+
+    /* @apply sm:text-base md:text-lg lg:text-xl xl:text-2xl; */
   }
 
   .navbar-link:hover {
@@ -82,8 +87,8 @@
   }
 
   .navbar-link {
-    @apply text-gray-300 hover:bg-gray-300 hover:bg-opacity-25 hover:text-white px-5 rounded-xl text-xl font-bold transition duration-300 ease-in-out;
-    @apply sm:text-lg sm:px-4 sm:py-2 md:text-xl md:px-5 md:py-3 lg:text-2xl lg:px-6 lg:py-4 xl:text-[1.5rem] xl:px-4 xl:py-2 2xl:text-4xl 2xl:px-8 2xl:py-6;
+    @apply text-gray-300 hover:bg-gray-300 hover:bg-opacity-25 hover:text-white rounded-xl text-[1.3rem] font-bold transition duration-300 ease-in-out;
+    @apply py-2 lg:text-[1.4rem] xl:text-2xl lg:px-2 xl:px-4;
     transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 

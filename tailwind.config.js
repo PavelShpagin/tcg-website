@@ -18,10 +18,10 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
+        border: "var(--border)",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
+        background: "var(--background)",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -78,6 +78,14 @@ module.exports = {
       boxShadow: {
         "custom-purple": "0 0 15px rgba(147, 51, 234, 0.4)",
         "custom-purple-hover": "0 0 25px rgba(147, 51, 234, 0.6)",
+      },
+      screens: {
+        sm: "640px",
+        md: "910px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+        "3xl": "1600px",
       },
     },
   },

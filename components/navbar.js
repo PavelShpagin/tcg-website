@@ -1,15 +1,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import AuthStatus from "./auth-status";
+import MobileMenu from "./mobile-menu";
 
 const Navbar = () => {
   return (
     <nav>
-      <div className="max-w-8xl mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
-        <div className="flex items-center h-16">
+      <div className="max-w-8xl mx-auto flex items-center justify-between">
+        <div className="flex md:hidden">
+          <MobileMenu />
+        </div>
+        <div className="flex items-center justify-start w-32 ml-12 md:ml-0">
           <Link href="/">
             <Image
-              className="mr-4 brightness-[120%] hover:brightness-[140%] duration-200 ease-in-out"
+              className="mr-4 brightness-[120%] hover:brightness-[140%] duration-200 ease-in-out w-[100px] min-w-[100px] xl:w-[130px] xl:min-w-[130px]"
               src="/logo.png"
               alt="Logo"
               width={130}
@@ -17,23 +21,20 @@ const Navbar = () => {
             />
           </Link>
         </div>
-        <div className="flex-grow flex items-center justify-center space-x-4 md:space-x-6 lg:space-x-8">
-          <Link href="/casters" className="navbar-link">
-            Casters
-          </Link>
-          <Link href="/rules" className="navbar-link">
+        <div className="flex-grow items-center justify-center xl:space-x-4 hidden md:flex">
+          <Link href="/rules" className="navbar-link text-center">
             Rules
           </Link>
-          <Link href="/cards-official" className="navbar-link">
+          <Link href="/cards-official" className="navbar-link text-center">
             Cards
           </Link>
-          <Link href="/news" className="navbar-link">
+          <Link href="/news" className="navbar-link text-center">
             News
           </Link>
-          <Link href="/community" className="navbar-link">
-            Community
+          <Link href="/products" className="navbar-link text-center">
+            Products
           </Link>
-          <Link href="/create-card" className="navbar-link">
+          <Link href="/create-card" className="navbar-link text-center">
             Create
           </Link>
         </div>
