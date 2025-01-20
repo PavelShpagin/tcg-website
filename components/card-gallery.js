@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import SelectedCard from "./selected-card";
@@ -17,7 +17,9 @@ const CardGallery = ({ cards = [] }) => {
 
   return (
     <div>
-      <h1>Card Gallery</h1>
+      <h1 className="pt-44 pb-6 text-6xl font-bold text-center mb-8 drop-shadow-main">
+        Card Gallery
+      </h1>
       <div className="container mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div

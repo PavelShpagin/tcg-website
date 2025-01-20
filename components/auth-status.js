@@ -40,11 +40,13 @@ const AuthStatus = () => {
     <>
       {!loading && // Only display after loading is complete
         (user ? (
-          <div className="flex items-center">
+          <div className="flex items-center mr-1 md:mr-0">
             <UserIcon data={user} />
           </div>
         ) : (
-          <LoginButton />
+          <div className="flex items-center">
+            <LoginButton />
+          </div>
         ))}
     </>
   );

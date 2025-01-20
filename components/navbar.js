@@ -22,19 +22,19 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex-grow items-center justify-center xl:space-x-4 hidden md:flex">
-          <Link href="/rules" className="navbar-link text-center">
+          <Link href="/rules" className="navbar-link">
             Rules
           </Link>
-          <Link href="/cards-official" className="navbar-link text-center">
+          <Link href="/cards-official" className="navbar-link">
             Cards
           </Link>
-          <Link href="/news" className="navbar-link text-center">
+          <Link href="/news" className="navbar-link">
             News
           </Link>
-          <Link href="/products" className="navbar-link text-center">
+          <Link href="/products" className="navbar-link">
             Products
           </Link>
-          <Link href="/create-card" className="navbar-link text-center">
+          <Link href="/create-card" className="navbar-link">
             Create
           </Link>
         </div>
