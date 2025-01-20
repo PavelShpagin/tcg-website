@@ -239,8 +239,8 @@ export default function CardForm({ images }) {
 
       // Send the POST request
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`, 
-        formData, 
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`,
+        formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
@@ -294,7 +294,16 @@ export default function CardForm({ images }) {
         y: dragStart.current.initialY + deltaY,
       };
 
-      setImagePosition(constrainPosition(newPosition, imageScale, imageWidth.current, imageHeight.current, 368, 500));
+      setImagePosition(
+        constrainPosition(
+          newPosition,
+          imageScale,
+          imageWidth.current,
+          imageHeight.current,
+          368,
+          500
+        )
+      );
     }
   };
 
@@ -304,7 +313,16 @@ export default function CardForm({ images }) {
 
   const handleScaleChange = ([value]) => {
     setImageScale(value);
-    setImagePosition((prevPosition) => constrainPosition(prevPosition, value, imageWidth.current, imageHeight.current, 368, 500));
+    setImagePosition((prevPosition) =>
+      constrainPosition(
+        prevPosition,
+        value,
+        imageWidth.current,
+        imageHeight.current,
+        368,
+        500
+      )
+    );
   };
 
   const handleFlip = () => {
@@ -501,6 +519,7 @@ export default function CardForm({ images }) {
                   Submit
                 </Button>
                 <Button
+                  type="button"
                   size="md"
                   variant="outline"
                   className="font-semibold"

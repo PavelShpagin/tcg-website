@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@components/ui/button";
+import AuthStatus from "./auth-status";
 
 const Navbar = () => {
   return (
     <nav>
-      <div className="max-w-8xl mx-auto flex items-center justify-between">
+      <div className="max-w-8xl mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
         <div className="flex items-center h-16">
           <Link href="/">
             <Image
@@ -17,7 +17,10 @@ const Navbar = () => {
             />
           </Link>
         </div>
-        <div className="flex items-center space-x-10">
+        <div className="flex-grow flex items-center justify-center space-x-4 md:space-x-6 lg:space-x-8">
+          <Link href="/casters" className="navbar-link">
+            Casters
+          </Link>
           <Link href="/rules" className="navbar-link">
             Rules
           </Link>
@@ -34,26 +37,8 @@ const Navbar = () => {
             Create
           </Link>
         </div>
-        <div className="flex items-center">
-          <Button className="button-login">
-            Log In
-          </Button>
-          {/*
-          <div className="ml-5">
-            <svg
-              className="h-8 w-8 text-gray-300"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </div>*/}
+        <div className="flex items-center justify-end w-32">
+          <AuthStatus />
         </div>
       </div>
     </nav>
