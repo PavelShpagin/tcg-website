@@ -26,13 +26,13 @@ export default function CardForm({ images }) {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const [cardData, setCardData] = useState({
-    CardName: "",
-    LvL: "",
-    Cost: "",
-    Attack: "",
-    Health: "",
-    CardText: "",
-    Class: "",
+    title: "",
+    level: "",
+    cost: "",
+    attack: "",
+    health: "",
+    description: "",
+    class: "",
   });
   const [imageScale, setImageScale] = useState(1);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
@@ -87,13 +87,13 @@ export default function CardForm({ images }) {
       );
       setActiveTab(nextImage.type);
       setCardData({
-        CardName: "",
-        LvL: "",
-        Cost: "",
-        Attack: "",
-        Health: "",
-        CardText: "",
-        Class: nextImage.class,
+        title: "",
+        level: "",
+        cost: "",
+        attack: "",
+        health: "",
+        description: "",
+        class: nextImage.class,
       });
       setMinScale(scale);
       setImageScale(scale);
@@ -108,7 +108,7 @@ export default function CardForm({ images }) {
   };
 
   const handleSelectorChange = (value) => {
-    setCardData((prev) => ({ ...prev, Class: value }));
+    setCardData((prev) => ({ ...prev, class: value }));
   };
 
   const handleFocus = (e) => {
@@ -228,14 +228,14 @@ export default function CardForm({ images }) {
       formData.append("scale", imageScale);
       formData.append("position", JSON.stringify(imagePosition));
       formData.append("card_file", webpBlob, "card.webp");
-      formData.append("title", cardData.CardName);
-      formData.append("description", cardData.CardText);
-      formData.append("class", cardData.Class);
-      formData.append("level", cardData.LvL);
-      formData.append("attack", cardData.Attack);
-      formData.append("health", cardData.Health);
+      formData.append("title", cardData.title);
+      formData.append("description", cardData.description);
+      formData.append("class", cardData.class);
+      formData.append("level", cardData.level);
+      formData.append("attack", cardData.attack);
+      formData.append("health", cardData.health);
       formData.append("type", activeTab);
-      formData.append("cost", cardData.Cost);
+      formData.append("cost", cardData.cost);
 
       // Send the POST request
       const response = await axios.post(
@@ -358,76 +358,76 @@ export default function CardForm({ images }) {
           </button>
         ))}
       </div>
-      <div className="bg-black bg-opacity-60 backdrop-blur-xl pl-10 pt-10 pr-10 pb-3 rounded-3xl shadow-lg flex space-x-10">
+      <div className="bg-secondary-background bg-opacity-60 backdrop-blur-xl border-[1.5px] border-secondary-border pl-10 pt-10 pr-10 pb-3 rounded-3xl shadow-lg flex space-x-10">
         <div className="flex flex-col space-y-4">
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div
                   className={
-                    uploading || isDisabled(activeTab, "LvL")
+                    uploading || isDisabled(activeTab, "level")
                       ? "opacity-30"
                       : undefined
                   }
                 >
                   <Label>
                     LvL
-                    <span className="text-red-400 ml-1">{errors.LvL}</span>
+                    <span className="text-red-400 ml-1">{errors.level}</span>
                   </Label>
                   <Input
-                    name="LvL"
+                    name="level"
                     type="number"
                     placeholder="LvL"
-                    disabled={uploading || isDisabled(activeTab, "LvL")}
-                    value={cardData.LvL}
+                    disabled={uploading || isDisabled(activeTab, "level")}
+                    value={cardData.level}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
-                    className={errors.LvL && "border-2 border-red-400"}
+                    className={errors.level && "border-2 border-red-400"}
                   />
                 </div>
                 <div className={uploading ? "opacity-30" : undefined}>
                   <Label>
                     Card Name
-                    <span className="text-red-400 ml-1">{errors.CardName}</span>
+                    <span className="text-red-400 ml-1">{errors.title}</span>
                   </Label>
                   <Input
-                    name="CardName"
+                    name="title"
                     type="text"
                     placeholder="Enter card name"
-                    value={cardData.CardName}
+                    value={cardData.title}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
-                    className={errors.CardName && "border-2 border-red-400"}
+                    className={errors.title && "border-2 border-red-400"}
                     disabled={uploading}
                   />
                 </div>
                 <div className={uploading ? "opacity-30" : undefined}>
                   <Label>
                     Cost
-                    <span className="text-red-400 ml-1">{errors.Cost}</span>
+                    <span className="text-red-400 ml-1">{errors.cost}</span>
                   </Label>
                   <Input
-                    name="Cost"
+                    name="cost"
                     type="text"
                     placeholder="Cost"
-                    value={cardData.Cost}
+                    value={cardData.cost}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
-                    className={errors.Cost && "border-2 border-red-400"}
+                    className={errors.cost && "border-2 border-red-400"}
                     disabled={uploading}
                   />
                 </div>
                 <div className={uploading ? "opacity-30" : undefined}>
                   <Label>
                     Class
-                    <span className="text-red-400 ml-1">{errors.Class}</span>
+                    <span className="text-red-400 ml-1">{errors.class}</span>
                   </Label>
-                  {cardData.Class && (
+                  {cardData.class && (
                     <Selector
-                      name="Class"
+                      name="class"
                       placeholder="Blue"
                       items={["Blue", "Purple"]}
-                      value={cardData.Class}
+                      value={cardData.class}
                       onChange={handleSelectorChange}
                       onFocus={handleFocus}
                       disabled={uploading}
@@ -438,10 +438,10 @@ export default function CardForm({ images }) {
               <div className={uploading ? "opacity-30" : undefined}>
                 <Label>Card Text</Label>
                 <Textarea
-                  name="CardText"
+                  name="description"
                   rows="3"
                   placeholder="Enter card text"
-                  value={cardData.CardText}
+                  value={cardData.description}
                   onChange={handleInputChange}
                   disabled={uploading}
                 ></Textarea>
@@ -449,47 +449,47 @@ export default function CardForm({ images }) {
               <div className="grid grid-cols-2 gap-4">
                 <div
                   className={
-                    uploading || isDisabled(activeTab, "Attack")
+                    uploading || isDisabled(activeTab, "attack")
                       ? "opacity-30"
                       : undefined
                   }
                 >
                   <Label>
                     Attack
-                    <span className="text-red-400 ml-1">{errors.Attack}</span>
+                    <span className="text-red-400 ml-1">{errors.attack}</span>
                   </Label>
                   <Input
-                    name="Attack"
+                    name="attack"
                     type="number"
                     placeholder="Attack"
-                    disabled={isDisabled(activeTab, "Attack")}
-                    value={cardData.Attack}
+                    disabled={isDisabled(activeTab, "attack")}
+                    value={cardData.attack}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
-                    className={errors.Attack && "border-2 border-red-400"}
+                    className={errors.attack && "border-2 border-red-400"}
                   />
                 </div>
                 <div
                   className={
-                    uploading || isDisabled(activeTab, "Health")
+                    uploading || isDisabled(activeTab, "health")
                       ? "opacity-30"
                       : undefined
                   }
                 >
                   <Label>
                     Health
-                    <span className="text-red-400 ml-1">{errors.Health}</span>
+                    <span className="text-red-400 ml-1">{errors.health}</span>
                   </Label>
                   <Input
-                    name="Health"
+                    name="health"
                     type="number"
                     placeholder="Health"
-                    disabled={isDisabled(activeTab, "Health") || uploading}
-                    value={cardData.Health}
+                    disabled={isDisabled(activeTab, "health") || uploading}
+                    value={cardData.health}
                     onChange={handleInputChange}
                     onFocus={handleFocus}
                     className={
-                      errors.Health ? "border-2 border-red-400" : undefined
+                      errors.health ? "border-2 border-red-400" : undefined
                     }
                   />
                 </div>

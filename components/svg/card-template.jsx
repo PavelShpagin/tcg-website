@@ -23,13 +23,13 @@ const CardTemplate = ({
   onMouseLeave,
   isDragging,
   cardData = {
-    CardName: "",
-    LvL: "",
-    Cost: "",
-    Attack: "",
-    Health: "",
-    CardText: "",
-    Class: "Blue",
+    title: "",
+    level: "",
+    cost: "",
+    attack: "",
+    health: "",
+    description: "",
+    class: "Blue",
   },
   type,
   flip = false,
@@ -48,7 +48,7 @@ const CardTemplate = ({
       floodColor: "#955fcb",
     },
   };
-  const currentStyle = classStyles[cardData.Class] || classStyles.Blue;
+  const currentStyle = classStyles[cardData.class] || classStyles.Blue;
 
   const splitTextIntoLines = (text, maxCharsPerLine = 25) => {
     // Split by actual newlines first, then by words
@@ -110,6 +110,9 @@ const CardTemplate = ({
       { pattern: "Shield 1", gradient: "f" },
       { pattern: "Shield 2", gradient: "f" },
       { pattern: "Shield 3", gradient: "f" },
+      { pattern: "Passive:", gradient: "f" },
+      { pattern: "Passive", gradient: "f" },
+      { pattern: "Equip:", gradient: "f" },
     ];
 
     lines.forEach((line, lineIndex) => {
@@ -176,7 +179,7 @@ const CardTemplate = ({
     }
   };
 
-  const textLines = splitTextIntoLines(cardData.CardText);
+  const textLines = splitTextIntoLines(cardData.description);
   console.log(textLines);
   let { keywordY, startY } = getY(textLines.length);
 
@@ -631,7 +634,7 @@ const CardTemplate = ({
               strokeWidth: 0.121855,
             }}
           >
-            {cardData.Cost}
+            {cardData.cost}
           </tspan>
         </text>
         <text
@@ -732,7 +735,7 @@ const CardTemplate = ({
               strokeOpacity: 1,
             }}
           >
-            {cardData.CardName}
+            {cardData.title}
           </tspan>
         </text>
 
@@ -860,7 +863,7 @@ const CardTemplate = ({
                   strokeOpacity: 1,
                 }}
               >
-                {cardData.LvL}
+                {cardData.level}
               </tspan>
             </text>
           </>
@@ -936,7 +939,7 @@ const CardTemplate = ({
                   strokeOpacity: 1,
                 }}
               >
-                {cardData.Attack}
+                {cardData.attack}
               </tspan>
             </text>
           </>
@@ -1010,7 +1013,7 @@ const CardTemplate = ({
                   strokeOpacity: 1,
                 }}
               >
-                {cardData.Health}
+                {cardData.health}
               </tspan>
             </text>
           </>

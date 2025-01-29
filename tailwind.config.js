@@ -12,11 +12,11 @@ module.exports = {
     container: {
       center: true,
       padding: "2rem",
+    },
+    extend: {
       screens: {
         "2xl": "1400px",
       },
-    },
-    extend: {
       colors: {
         border: "var(--border)",
         input: "hsl(var(--input))",
@@ -28,8 +28,8 @@ module.exports = {
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          background: "var(--secondary-background)",
+          border: "var(--secondary-border)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

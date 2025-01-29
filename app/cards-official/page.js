@@ -12,13 +12,15 @@ export default async function CardsOfficial() {
   return (
     <>
       <div
-        className="fixed bg-cover bg-center min-h-screen w-full blur-lg"
+        className="bg-fixed bg-cover bg-center"
         style={{
           backgroundImage: "url('/cards-official-bg.png')",
-          zIndex: -1,
         }}
-      ></div>
-      <CardGallery cards={cards} className="relative z-10" />
+      >
+        <div className="backdrop-blur-md">
+          <CardGallery cards={cards} className="relative z-10" />
+        </div>
+      </div>
     </>
   );
 }

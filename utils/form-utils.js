@@ -1,20 +1,23 @@
 export const validateForm = (cardData, activeTab) => {
   let newErrors = {};
-  if (!cardData.CardName.trim()) newErrors.CardName = "(required)";
-  if ((activeTab === "Minion" || activeTab === "Stage") && !cardData.LvL.trim())
-    newErrors.LvL = "(required)";
-  if (!cardData.Cost.trim()) newErrors.Cost = "(required)";
-  if (activeTab === "Minion" && !cardData.Attack.trim())
-    newErrors.Attack = "(required)";
-  if (activeTab === "Minion" && !cardData.Health.trim())
-    newErrors.Health = "(required)";
+  if (!cardData.title.trim()) newErrors.title = "(required)";
+  if (
+    (activeTab === "Minion" || activeTab === "Stage") &&
+    !cardData.level.trim()
+  )
+    newErrors.level = "(required)";
+  if (!cardData.cost.trim()) newErrors.cost = "(required)";
+  if (activeTab === "Minion" && !cardData.attack.trim())
+    newErrors.attack = "(required)";
+  if (activeTab === "Minion" && !cardData.health.trim())
+    newErrors.health = "(required)";
 
   return newErrors;
 };
 
 export const isDisabled = (activeTab, field = "") => {
   return (
-    (activeTab !== "Minion" && (field === "Attack" || field === "Health")) ||
-    (activeTab === "Spell" && field === "LvL")
+    (activeTab !== "Minion" && (field === "attack" || field === "health")) ||
+    (activeTab === "Spell" && field === "level")
   );
 };
