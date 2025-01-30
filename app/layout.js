@@ -34,7 +34,6 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning>
         <Navbar />
-        {/* <ImagePreloader /> */}
         <main>
           {children}
           <Toaster />

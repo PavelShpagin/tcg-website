@@ -5,7 +5,7 @@ import MobileMenu from "./mobile-menu";
 
 const Navbar = () => {
   return (
-    <nav>
+    <nav className="navbar">
       <div className="max-w-8xl mx-auto flex items-center justify-between">
         <div className="flex md:hidden">
           <MobileMenu />

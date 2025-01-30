@@ -1,4 +1,5 @@
 import CardGallery from "@components/card-gallery";
+import SelectedCard from "@components/selected-card";
 
 export default async function CardsOfficial() {
   const response = await fetch(
@@ -17,8 +18,8 @@ export default async function CardsOfficial() {
           backgroundImage: "url('/cards-official-bg.png')",
         }}
       >
-        <div className="backdrop-blur-md">
-          <CardGallery cards={cards} className="relative z-10" />
+        <div>
+          <CardGallery cards={cards} />
         </div>
       </div>
     </>

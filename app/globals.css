@@ -50,8 +50,8 @@
     overflow-x: hidden;
   }
 
-  nav {
-    @apply fixed z-40 top-8 mx-12 left-0 right-0;
+  .navbar {
+    @apply fixed z-10 top-8 mx-12 left-0 right-0;
     background-color: var(--background);
     @apply backdrop-blur-lg rounded-xl shadow-xl border-[3px];
     border-color: var(--border);
