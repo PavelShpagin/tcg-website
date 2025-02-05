@@ -4,6 +4,7 @@ import { Button } from "@components/ui/button";
 import { IM_Fell_English } from "next/font/google";
 import { FaDiscord } from "react-icons/fa";
 import { cn } from "@/lib/utils";
+import ShowcaseCards from "@/components/showcase";
 
 const font = IM_Fell_English({
   weight: ["400"],
@@ -16,7 +17,7 @@ export default async function Home() {
       className="bg-cover flex flex-col items-center overflow-x-hidden"
       style={{
         backgroundImage: "url(/home-bg.png)",
-        height: "1800px",
+        height: "1660px",
       }}
     >
       <Image
@@ -54,7 +55,6 @@ export default async function Home() {
         >
           Welcome to Our Community
         </h2>
-
         <Link href="https://discord.gg/yourdiscordlink" className="mt-8">
           <Button className="button-purple">
             <FaDiscord className="mr-2" />
@@ -62,6 +62,7 @@ export default async function Home() {
           </Button>
         </Link>
       </div>
+      <ShowcaseCards />
     </div>
   );
 }

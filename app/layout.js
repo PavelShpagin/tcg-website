@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
+import Footer from "@/components/footer";
 
 const inter = Roboto({
   weight: ["700"],
@@ -32,12 +33,13 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className="flex flex-col min-h-screen">
         <Navbar />
-        <main>
+        <main className="flex-grow">
           {children}
           <Toaster />
         </main>
+        <Footer />
       </body>
     </html>
   );

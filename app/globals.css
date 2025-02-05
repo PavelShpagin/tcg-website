@@ -4,69 +4,50 @@
 
 @layer base {
   :root {
-    --foreground: 210 20% 98%;
-
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-
-    --primary: 210 20% 98%;
-    --primary-foreground: 220.9 39.3% 11%;
-
-
-    --secondary-foreground: 210 20% 98%;
-
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-
-    --input: 215 27.9% 16.9%;
-    --ring: 216 12.2% 83.9%;
-
-    --red: 215 27.9% 16.9%;
-    --red-foreground: 210 20% 98%;
-
+    /* Base Colors */
+    --foreground: hsl(210, 20%, 98%);
     --background: rgba(107, 112, 121, 0.5);
     --border: rgba(243, 244, 246, 0.35);
-    --secondary-background: rgba(45, 48, 56, 0.8);
-    --secondary-border: rgba(0, 0, 0, 0.45);
-  }
-}
 
-@layer base {
-  * {
-    @apply border-border;
+
+    /* Main Palette */
+    --primary: #1e293b;
+    --secondary: #334155;
+    --accent: #3b82f6;
+
+    /* Footer Palette */
+    --footer-bg: rgba(15, 15, 15, 1);
+    /* a solid, professional dark background */
+    --footer-text: rgba(209, 213, 219, 0.9);
+    --footer-link: rgba(160, 160, 160, 0.9);
+    --footer-link-hover: rgba(255, 255, 255, 1);
+    --footer-divider: rgba(75, 85, 99, 0.6);
+
+    /* Showcase Section */
+    --showcase-bg: #1216227a;
   }
 
+  /* Base styles */
   body {
-    @apply bg-background text-foreground;
-    overflow-x: hidden;
+    @apply bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden;
+  }
+
+  * {
+    @apply border-[var(--border)];
   }
 
   .navbar {
-    @apply fixed z-10 top-8 mx-12 left-0 right-0;
+    @apply fixed z-30 top-8 mx-12 left-0 right-0 py-1 md:px-5 2xl:px-8;
     background-color: var(--background);
     @apply backdrop-blur-lg rounded-xl shadow-xl border-[3px];
     border-color: var(--border);
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-    @apply py-1;
-    @apply md:px-5 2xl:px-8;
   }
 
   .navbar-link {
-    @apply text-gray-300 hover:text-white px-2 text-lg font-bold;
-    @apply transition duration-300 ease-in-out;
+    @apply text-gray-300 hover:text-white px-2 text-lg font-bold transition duration-300 ease-in-out;
     border: 2.5px solid transparent;
     margin: 0.5rem;
-
-    /* @apply sm:text-base md:text-lg lg:text-xl xl:text-2xl; */
   }
 
   .navbar-link:hover {
@@ -77,15 +58,10 @@
 
 @layer utilities {
   .drop-shadow-main {
-    text-shadow:
-      1px 1px 2px #696969,
-      /* dim gray */
+    text-shadow: 1px 1px 2px #696969,
       1px 1px 10px #708090,
-      /* slate gray */
       1px 1px 18px #2F4F4F,
-      /* dark slate gray */
       1px 1px 25px #000000;
-    /* black */
   }
 
   .navbar-link {
@@ -98,31 +74,51 @@
     color: #f0f0f0;
   }
 
-  /* Specific styles for the purple button */
   .button-purple {
     @apply text-white py-3 px-6;
     @apply bg-gradient-to-r from-indigo-800 via-purple-700 to-indigo-800;
     @apply border-[2.5px] border-purple-300/40 hover:border-purple-200/60;
     @apply shadow-custom-purple hover:shadow-custom-purple-hover;
-    @apply backdrop-blur-sm;
-    @apply hover:-translate-y-0.5;
-    @apply before:absolute before:inset-0;
-    @apply before:bg-gradient-to-r before:from-purple-500/30 before:to-indigo-500/30;
-    @apply before:rounded-xl before:opacity-0;
-    @apply before:transition-opacity before:duration-300;
-    @apply hover:before:opacity-100;
-    @apply after:absolute after:inset-0;
-    @apply after:bg-[url('https://assets.codepen.io/13471/sparkles.gif')];
-    @apply after:bg-cover after:opacity-60;
-    @apply after:rounded-xl after:mix-blend-soft-light;
+    @apply backdrop-blur-sm hover:-translate-y-0.5;
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/30 before:to-indigo-500/30;
+    @apply before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100;
+    @apply after:absolute after:inset-0 after:bg-[url('https://assets.codepen.io/13471/sparkles.gif')] after:bg-cover after:opacity-60 after:rounded-xl after:mix-blend-soft-light;
     @apply active:scale-95 active:shadow-inner;
   }
 
-  /* Specific styles for the login button */
   .button-login {
     @apply text-gray-300 py-2 px-6;
     @apply bg-white bg-opacity-15 hover:bg-opacity-30;
     @apply border-[2.75px] border-gray-300/40 hover:border-gray-300/60;
     @apply active:scale-95;
+  }
+
+  .gray-delimiter {
+    @apply flex-grow h-0.5 bg-[var(--footer-divider)] rounded-full;
+  }
+
+  .footer-social-icon {
+    color: var(--footer-link);
+    @apply transition-all duration-300 transform hover:scale-110;
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-xl;
+    background-color: var(--footer-bg);
+    border: 2px solid var(--footer-link);
+  }
+
+  .footer-social-icon:hover {
+    color: var(--footer-link-hover);
+    background-color: var(--footer-bg);
+    border-color: var(--footer-link-hover);
+  }
+
+  .footer-link {
+    color: var(--footer-link);
+    @apply transition-colors duration-200 text-sm;
+    border-bottom: 1px solid var(--footer-link);
+  }
+
+  .footer-link:hover {
+    color: var(--footer-link-hover);
+    border-bottom-color: var(--footer-link-hover);
   }
 }

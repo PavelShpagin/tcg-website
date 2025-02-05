@@ -8,7 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const Selector = ({ placeholder, label, items, value, onChange, disabled }) => {
+export default function Selector({
+  placeholder,
+  label,
+  items,
+  value,
+  onChange,
+  disabled,
+}) {
   return (
     <Select onValueChange={onChange} disabled={disabled} value={value}>
       <SelectTrigger className="w-[180px]">
@@ -27,6 +34,4 @@ const Selector = ({ placeholder, label, items, value, onChange, disabled }) => {
       </SelectContent>
     </Select>
   );
-};
-
-export default Selector;
+}
