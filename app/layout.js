@@ -39,7 +39,6 @@ export default function RootLayout({ children }) {
           {children}
           <Toaster />
         </main>
-        <Footer />
       </body>
     </html>
   );

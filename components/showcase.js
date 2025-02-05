@@ -44,7 +44,7 @@ const showcaseCards = [
 export default function ShowcaseCards() {
   return (
     <>
-      <section className="bg-[var(--showcase-bg)] w-full mt-20">
+      <section className="bg-[var(--showcase-bg)] w-full bg-opacity-60 mt-20">
         <div className="gray-delimiter"></div>
         <div className="w-full mx-auto py-12">
           {/* Header Section */}

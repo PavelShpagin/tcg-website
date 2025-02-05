@@ -29,7 +29,7 @@ const Footer = () => {
     <>
       <div className="gray-delimiter"></div>
       <footer
-        className="relative mt-auto py-8 px-4 text-[var(--footer-text)]"
+        className="relative mt-auto py-8 px-4 text-[var(--footer-text)] w-full"
         style={{ backgroundColor: "var(--footer-bg)" }}
       >
         {/* Slick gradient border at the top */}
@@ -70,8 +70,7 @@ const Footer = () => {
               }}
             >
               <p className="text-sm" style={{ color: "var(--footer-text)" }}>
-                © {currentYear} OpenCards. All rights
-                reserved.
+                © {currentYear} OpenCards. All rights reserved.
               </p>
               <span className="text-sm" style={{ color: "var(--footer-text)" }}>
                 English (US)
