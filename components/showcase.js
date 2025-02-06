@@ -74,7 +74,7 @@ export default function ShowcaseCards() {
               centeredSlides={true}
               loop={true}
               autoplay={{
-                delay: 3000,
+                delay: 1000,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}

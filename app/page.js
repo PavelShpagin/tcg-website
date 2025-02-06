@@ -56,7 +56,7 @@ export default async function Home() {
           >
             Welcome to Our Community
           </h2>
-          <Link href="https://discord.gg/yourdiscordlink" className="mt-8">
+          <Link href="https://discord.gg/rvGwTmjw" className="mt-8">
             <Button className="button-purple">
               <FaDiscord className="mr-2" />
               Join Discord

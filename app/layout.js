@@ -12,8 +12,11 @@ const inter = Roboto({
 });
 
 export const metadata = {
-  title: "Casters Trading Card Game",
-  description: "Casters Trading Card Game",
+  title: "Casters",
+  description: "Casters TCG",
+  icons: {
+    icon: "/icon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
