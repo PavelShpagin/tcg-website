@@ -4,7 +4,8 @@ import { Button } from "@components/ui/button";
 import { IM_Fell_English } from "next/font/google";
 import { FaDiscord } from "react-icons/fa";
 import { cn } from "@/lib/utils";
-import ShowcaseCards from "@/components/showcase";
+import ShowcaseCards from "@components/showcase-cards";
+import ShowcaseRules from "@components/showcase-rules";
 import Footer from "@/components/footer";
 
 const font = IM_Fell_English({
@@ -64,6 +65,7 @@ export default async function Home() {
           </Link>
         </div>
         <ShowcaseCards />
+        <ShowcaseRules />
       </div>
       <Footer />
     </>

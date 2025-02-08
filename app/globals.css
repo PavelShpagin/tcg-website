@@ -121,4 +121,8 @@
     color: var(--footer-link-hover);
     border-bottom-color: var(--footer-link-hover);
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
 }

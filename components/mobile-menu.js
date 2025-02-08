@@ -57,12 +57,12 @@ export default function MobileMenu() {
           <Link href="/cards-official" className="navbar-link">
             Cards
           </Link>
-          <Link href="/news" className="navbar-link">
+          {/* <Link href="/news" className="navbar-link">
             News
-          </Link>
-          <Link href="/products" className="navbar-link">
+          </Link> */}
+          {/* <Link href="/products" className="navbar-link">
             Products
-          </Link>
+          </Link> */}
           <Link href="/create-card" className="navbar-link">
             Create
           </Link>
