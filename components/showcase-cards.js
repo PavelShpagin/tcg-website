@@ -115,7 +115,7 @@ export default function ShowcaseCards() {
 
           {/* View All Button */}
           <div className="flex justify-center mt-8">
-            <Link href="/cards-official">
+            <Link href="/cards/official">
               <Button className="button-login">View All</Button>
             </Link>
           </div>

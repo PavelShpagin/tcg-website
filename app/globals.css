@@ -22,9 +22,18 @@
     --footer-link: rgba(160, 160, 160, 0.9);
     --footer-link-hover: rgba(255, 255, 255, 1);
     --footer-divider: rgba(75, 85, 99, 0.6);
+    --light-delimiter: rgba(75, 85, 99, 0.6);
 
     /* Showcase Section */
     --showcase-bg: #1216227a;
+  }
+
+  @font-face {
+    font-family: 'Ingra';
+    src: url('/fonts/Ingra.woff2') format('woff2'),
+      url('/fonts/Ingra.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
   }
 
   /* Base styles */
@@ -94,7 +103,7 @@
   }
 
   .gray-delimiter {
-    @apply flex-grow h-0.5 bg-[var(--footer-divider)] rounded-full;
+    @apply flex-grow h-0.5 bg-[var(--light-delimiter)] rounded-full;
   }
 
   .footer-social-icon {
@@ -124,5 +133,9 @@
 
   .perspective-1000 {
     perspective: 1000px;
+  }
+
+  .red-box {
+    @apply bg-gradient-to-t from-[#f05a31ff] to-[#0000ff00] px-2 py-0.5 rounded-b-[1px];
   }
 }

@@ -63,12 +63,8 @@ export default function FlippableCard({
   }, [isRevealed, displayFront, animate, scope]);
 
   return (
-    <div
-      ref={scope}
-      style={{ perspective: 1000 }}
-      className="inline-block hover:scale-[1.02] transition-transform duration-300"
-    >
-      <div className="w-[150px] h-[209px]">
+    <div ref={scope} style={{ perspective: 1000 }} className="inline-block">
+      <div className="w-[150px] h-[209px] hover:scale-[1.02] transition-transform duration-300">
         <Image
           src={displayFront ? frontImage : backImage}
           alt={alt}

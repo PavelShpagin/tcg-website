@@ -255,7 +255,7 @@ export default function CardForm({ images }) {
           description: "You successfully created a card.",
           variant: "success",
         });
-        router.push("/cards-official");
+        router.push("/cards/official");
       } else {
         toast({
           title: "Error",

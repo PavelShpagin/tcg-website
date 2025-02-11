@@ -137,7 +137,7 @@ export async function POST(request) {
 
     if (minionClassError) throw new Error(minionClassError.message);
 
-    revalidatePath("/cards-official");
+    revalidatePath("/cards/official");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

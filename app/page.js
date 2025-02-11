@@ -19,7 +19,7 @@ export default async function Home() {
       <div
         className="bg-cover flex flex-col items-center overflow-x-hidden h-[1800px-100vh]"
         style={{
-          backgroundImage: "url(/home-bg.png)",
+          backgroundImage: "url(/home-bg-full.png)",
         }}
       >
         <Image

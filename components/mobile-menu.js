@@ -54,7 +54,7 @@ export default function MobileMenu() {
           <Link href="/rules" className="navbar-link">
             Rules
           </Link>
-          <Link href="/cards-official" className="navbar-link">
+          <Link href="/cards/official" className="navbar-link">
             Cards
           </Link>
           {/* <Link href="/news" className="navbar-link">
