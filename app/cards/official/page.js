@@ -14,7 +14,7 @@ export default async function CardsOfficial() {
   return (
     <>
       <div className="bg-fixed bg-cover bg-center bg-[url('/cards-official-bg.png')]">
-        <CardGallery cards={cards} />
+        <CardGallery cards={cards} title="Official Cards" />
       </div>
       <Footer />
     </>

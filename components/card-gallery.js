@@ -26,7 +26,9 @@ const CardGallery = ({ cards = [], title = "Card Gallery" }) => {
         {/* Glassmorphic container */}
         <div className="flex items-center justify-center bg-[var(--showcase-bg)] bg-opacity-60 shadow-lg w-full z-10 py-16 min-h-[70vh]">
           {cards.length === 0 ? (
-            <p className="italic text-white text-lg">Yet to create...</p>
+            <p className="italic text-white text-lg">
+              Yet to create a masterpiece...
+            </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl">
               {cards.map((card, index) => (

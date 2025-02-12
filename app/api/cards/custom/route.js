@@ -9,14 +9,17 @@ export async function GET() {
       supabase
         .from("minions")
         .select("card_img, created_at")
+        .eq("is_official", false)
         .order("created_at", { ascending: false }),
       supabase
         .from("spells")
         .select("card_img, created_at")
+        .eq("is_official", false)
         .order("created_at", { ascending: false }),
       supabase
         .from("stages")
         .select("card_img, created_at")
+        .eq("is_official", false)
         .order("created_at", { ascending: false }),
     ]);
 

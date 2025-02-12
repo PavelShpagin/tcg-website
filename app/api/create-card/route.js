@@ -64,14 +64,29 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const supabase = createClient();
+
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    console.log("user", user, userError);
+    if (userError) throw new Error(userError.message);
+
     const data = await request.formData();
     const cardFile = data.get("card_file");
     const imageFile = data.get("image_file");
 
-    const [cardImageUrl, imageUrl] = await Promise.all([
+    const [cardImageUrl, imageUrl, isAdminData] = await Promise.all([
       uploadFileToBucket(cardFile, "official-images/card-images"),
       uploadFileToBucket(imageFile, "official-images/images"),
+      supabase
+        .from("user_roles")
+        .select("*")
+        .eq("user_id", user.user.id)
+        .eq("role_id", 1),
     ]);
+
+    if (isAdminData.error) throw new Error(isAdminData.error.message);
+
+    const isAdmin = isAdminData.data.length > 0;
 
     const type = data.get("type");
     const tableConfig = {
@@ -99,8 +114,9 @@ export async function POST(request) {
       description: data.get("description"),
       cost: data.get("cost"),
       card_img: cardImageUrl,
+      owner_id: user.user.id,
       img: imageUrl,
-      type: "official",
+      is_official: isAdmin,
       scale: data.get("scale"),
       position_x: JSON.parse(data.get("position")).x,
       position_y: JSON.parse(data.get("position")).y,
@@ -113,8 +129,6 @@ export async function POST(request) {
         level: parseInt(data.get("level"), 10),
       }),
     };
-
-    const supabase = createClient();
 
     const [classData, cardData] = await Promise.all([
       supabase

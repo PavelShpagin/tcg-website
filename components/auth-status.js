@@ -36,7 +36,14 @@ const AuthStatus = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      fetchUser();
+      console.log("session", session);
+      console.log("user", user);
+      if (session?.user) {
+        fetchUser();
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     });
 
     // Cleanup subscription on unmount
@@ -54,7 +61,7 @@ const AuthStatus = () => {
           </div>
         ) : (
           <div className="flex items-center">
-            <LoginButton />
+            <LoginButton setLoading={setLoading} />
           </div>
         ))}
     </>

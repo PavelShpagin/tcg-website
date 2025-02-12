@@ -6,19 +6,19 @@ import { Button } from "@components/ui/button";
 import { IoLogInOutline } from "react-icons/io5";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function LoginButton() {
+export default function LoginButton({ setLoading }) {
   const supabase = createClient();
   const { toast } = useToast();
   const handleLogin = async () => {
     try {
       const url = await loginWithDiscord(); // Call the server-side function
-      console.log(url);
       const authTab = window.open(url, "_blank"); // Open a new tab
 
       if (authTab) {
         const { data: authListener } = supabase.auth.onAuthStateChange(
           (event, session) => {
             if (event === "SIGNED_IN") {
+              setLoading(true);
               authTab.close();
               //authListener.unsubscribe(); // Clean up the listener
             }
