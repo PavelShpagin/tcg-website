@@ -12,11 +12,21 @@ const AuthStatus = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false); // Set loading to false after fetching user
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+        setLoading(false);
+        return;
+      }
+      if (data.user) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${data.user.id}`
+        );
+        const result = await response.json();
+        console.log("result", result.user);
+        setUser(result.user);
+      }
+      setLoading(false);
     };
 
     // Fetch user on initial load
@@ -26,8 +36,7 @@ const AuthStatus = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null); // Update user state based on session
-      setLoading(false); // Ensure loading is false on auth state change
+      fetchUser();
     });
 
     // Cleanup subscription on unmount

@@ -6,7 +6,11 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialIcons = [
-    { icon: <FaDiscord />, href: "https://discord.com", label: "Discord" },
+    {
+      icon: <FaDiscord />,
+      href: "https://discord.gg/rvGwTmjw",
+      label: "Discord",
+    },
     { icon: <FaXTwitter />, href: "https://twitter.com", label: "Twitter" },
     {
       icon: <TiSocialYoutube />,

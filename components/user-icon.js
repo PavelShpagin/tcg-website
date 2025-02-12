@@ -8,8 +8,11 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { IoLogOutOutline } from "react-icons/io5";
+import { TbCards } from "react-icons/tb";
+import Link from "next/link";
 
 const UserIcon = ({ data }) => {
+  console.log("data", data);
   const supabase = createClient();
   return (
     <div className="relative">
@@ -29,6 +32,12 @@ const UserIcon = ({ data }) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent>
+          <DropdownMenuItem>
+            <TbCards className="h-auto w-auto mr-1" />
+            <Link href={`/cards/${data.id}?username=${data.username}`}>
+              My Cards
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>
             <IoLogOutOutline className="h-auto w-auto mr-1" />
             <button onClick={() => supabase.auth.signOut()}>Log Out</button>
