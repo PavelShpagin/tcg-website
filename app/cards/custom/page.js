@@ -13,7 +13,7 @@ export default async function CardsOfficial() {
 
   return (
     <>
-      <div className="bg-fixed bg-cover bg-center bg-[url('/cards-official-bg.png')]">
+      <div className="bg-fixed bg-cover bg-center bg-[url('/cards-custom-bg.png')]">
         <CardGallery cards={cards} title="Custom Cards" />
       </div>
       <Footer />

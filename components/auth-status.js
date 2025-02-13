@@ -50,7 +50,7 @@ const AuthStatus = () => {
     return () => {
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [supabase.auth]);
 
   return (
     <>

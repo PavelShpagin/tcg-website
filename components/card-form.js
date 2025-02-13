@@ -333,7 +333,7 @@ export default function CardForm({ images }) {
     if (images?.length > 0) {
       handleNewCard();
     }
-  }, [images]);
+  }, [images?.length]);
 
   return (
     <div>

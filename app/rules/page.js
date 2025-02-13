@@ -62,7 +62,7 @@ export default function Rules() {
                   Welcome to Casters, an immersive fantasy Trading Card Game
                   where two players engage in strategic combat. Victory is
                   achieved through masterful summoning of minions, tactical
-                  spell casting, and skillful prediction of your opponent's
+                  spell casting, and skillful prediction of your opponent&apos;s
                   moves.
                 </p>
               </section>

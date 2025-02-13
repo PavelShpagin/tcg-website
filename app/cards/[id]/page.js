@@ -13,7 +13,7 @@ export default async function UserProfile({ params, searchParams }) {
 
   return (
     <>
-      <div className="bg-fixed bg-cover bg-center bg-[url('/cards-official-bg.png')]">
+      <div className="bg-fixed bg-cover bg-center bg-[url('/cards-user-bg.png')]">
         <CardGallery cards={cards} title={`${username}`} />
       </div>
       <Footer />

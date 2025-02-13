@@ -1,6 +1,8 @@
 import "server-only";
 import { createClient } from "@/utils/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const supabase = createClient();
