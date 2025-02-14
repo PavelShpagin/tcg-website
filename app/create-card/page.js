@@ -1,6 +1,9 @@
 import { cache } from "react";
 import CardForm from "@components/card-form";
 
+// Force the page to render at request time (dynamic)
+export const dynamic = "force-dynamic";
+
 export default async function CreateCard() {
   // Fetch images from the API and cache them for an hour
   const fetchImages = cache(async () => {

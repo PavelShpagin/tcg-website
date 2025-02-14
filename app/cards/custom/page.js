@@ -3,12 +3,11 @@ import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
 
 export default async function CardsOfficial() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/custom`,
-    {
-      cache: "no-store",
-    }
-  );
+  console.log(process.env.NEXT_PUBLIC_BASE_URL);
+  
+  const response = await fetch(`https://tcg-website.pavelandrewshpagin.workers.dev/api/cards/custom`, {
+    cache: "no-store",
+  });
   const cards = await response.json();
 
   return (

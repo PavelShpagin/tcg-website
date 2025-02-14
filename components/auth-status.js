@@ -20,7 +20,7 @@ const AuthStatus = () => {
       }
       if (data.user) {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${data.user.id}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${data.user.id}`
         );
         const result = await response.json();
         console.log("result", result.user);

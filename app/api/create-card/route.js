@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 async function uploadFileToBucket(file, bucketName) {
   const supabase = createClient();
   const fileContents = await file.arrayBuffer();
@@ -151,7 +153,7 @@ export async function POST(request) {
 
     if (minionClassError) throw new Error(minionClassError.message);
 
-    revalidatePath("/cards/official");
+    revalidatePath("/cards/custom");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
