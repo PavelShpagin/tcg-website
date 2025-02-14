@@ -12,7 +12,6 @@ import { TbCards } from "react-icons/tb";
 import Link from "next/link";
 
 const UserIcon = ({ data }) => {
-  console.log("data", data);
   const supabase = createClient();
   return (
     <div className="relative">

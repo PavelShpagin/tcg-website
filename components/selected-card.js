@@ -2,7 +2,6 @@
 import Image from "next/image";
 
 export default function SelectedCard({ selectedImage, onClose }) {
-  console.log(selectedImage);
   if (!selectedImage) return null;
 
   return (

@@ -5,8 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   const userId = params.id;
-  console.log(userId);
-
   const supabase = createClient();
 
   // Fetch cards from the "minions" table for the given user.
@@ -54,7 +52,6 @@ export async function GET(request, { params }) {
     (a, b) =>
       new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
   );
-  console.log(combinedCards);
 
   return NextResponse.json(combinedCards, { status: 200 });
 }

@@ -7,7 +7,7 @@ export async function loginWithDiscord() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "discord",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/xx/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/xx/auth/callback`,
     },
   });
 

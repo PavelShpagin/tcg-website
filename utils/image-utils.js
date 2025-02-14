@@ -23,27 +23,28 @@ export const calculateScaleAndPosition = (
   return { scale, position: { x, y } };
 };
 
-export const constrainPosition = (pos, currentScale, imageWidth, imageHeight, frameWidth, frameHeight) => {
-  console.log("logging...")
-  console.log(pos);
-  console.log(currentScale);
- 
+export const constrainPosition = (
+  pos,
+  currentScale,
+  imageWidth,
+  imageHeight,
+  frameWidth,
+  frameHeight
+) => {
   const svgScale = 500.001 / 1.02 / 132.292;
-  
+
   let actualWidth;
   let actualHeight;
   if (imageWidth / imageHeight > frameWidth / frameHeight) {
     actualWidth = frameWidth * currentScale;
-    actualHeight = imageHeight * frameWidth / imageWidth * currentScale;
+    actualHeight = ((imageHeight * frameWidth) / imageWidth) * currentScale;
   } else {
-    actualWidth = imageWidth * frameHeight / imageHeight * currentScale;
+    actualWidth = ((imageWidth * frameHeight) / imageHeight) * currentScale;
     actualHeight = frameHeight * currentScale;
   }
 
-  console.log(actualWidth, actualHeight);
   const maxX = (actualWidth - frameWidth) / 2 / svgScale;
   const maxY = (actualHeight - frameHeight) / 2 / svgScale;
-  console.log(maxX, maxY);
 
   return {
     x: Math.max(-maxX, Math.min(maxX, pos.x)),

@@ -35,7 +35,6 @@ const CardTemplate = ({
   flip = false,
   ...props
 }) => {
-  console.log(type);
   const classStyles = {
     Blue: {
       gradients: ["#71afe1", "#94ddf4", "#c2edfb"],
@@ -180,7 +179,6 @@ const CardTemplate = ({
   };
 
   const textLines = splitTextIntoLines(cardData.description);
-  console.log(textLines);
   let { keywordY, startY } = getY(textLines.length);
 
   if (type === "Minion" && textLines.length == 3 && textLines[2].length < 20) {

@@ -67,7 +67,7 @@ export async function POST(request) {
     const supabase = createClient();
 
     const { data: user, error: userError } = await supabase.auth.getUser();
-    console.log("user", user, userError);
+
     if (userError) throw new Error(userError.message);
 
     const data = await request.formData();

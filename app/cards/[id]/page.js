@@ -4,7 +4,7 @@ import Footer from "@components/footer";
 export default async function UserProfile({ params, searchParams }) {
   const username = searchParams.username || "User";
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/cards/${params.id}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/${params.id}`,
     {
       cache: "no-store",
     }
