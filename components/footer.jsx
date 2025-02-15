@@ -8,15 +8,16 @@ const Footer = () => {
   const socialIcons = [
     {
       icon: <FaDiscord />,
-      href: "https://discord.gg/rvGwTmjw",
+      href: "https://discord.gg/GtCntvru",
       label: "Discord",
     },
-    { icon: <FaXTwitter />, href: "https://twitter.com", label: "Twitter" },
+    { icon: <FaXTwitter />, href: "https://x.com/casters_tcg", label: "Twitter" },
     {
       icon: <TiSocialYoutube />,
-      href: "https://youtube.com",
+      href: "https://www.youtube.com/@casters_tcg",
       label: "YouTube",
     },
+    /*
     {
       icon: <SlSocialInstagram />,
       href: "https://instagram.com",
@@ -27,6 +28,7 @@ const Footer = () => {
       href: "https://facebook.com",
       label: "Facebook",
     },
+    */
   ];
 
   return (
@@ -57,6 +59,8 @@ const Footer = () => {
                   href={social.href}
                   className="footer-social-icon"
                   aria-label={social.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {social.icon}
                 </a>
