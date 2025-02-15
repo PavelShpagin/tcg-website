@@ -4,6 +4,7 @@ import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import Footer from "@/components/footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Roboto({
   weight: ["700"],
