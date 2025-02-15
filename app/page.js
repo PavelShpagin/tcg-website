@@ -22,6 +22,7 @@ export default async function Home() {
           backgroundImage: "url(/home-bg-full.png)",
         }}
       >
+        <p>{process.env.NEXT_PUBLIC_BASE_URL}</p>
         <Image
           className="absolute mt-[160px] lg:mt-[calc(33.333vh-100px)] z-0 w-[400px] lg:w-[600px] h-auto max-w-[800px]"
           src="/logo-full.svg"

@@ -3,10 +3,12 @@ import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
 
 export default async function CardsOfficial() {
+  console.log(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/official`);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/official`,
     {
       cache: "no-store",
+      mode: "no-cors",
     }
   );
   const cards = await response.json();
