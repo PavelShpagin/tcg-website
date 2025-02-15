@@ -14,7 +14,7 @@ const Navbar = () => {
           <Link href="/">
             <Image
               className="mr-4 brightness-[120%] hover:brightness-[140%] duration-200 ease-in-out w-[100px] min-w-[100px] xl:w-[130px] xl:min-w-[130px]"
-              src="/logo.png"
+              src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`}
               alt="Logo"
               width={130}
               height={33}

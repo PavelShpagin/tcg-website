@@ -29,9 +29,9 @@ export default function BoardShowcase({ cardImages }) {
     cardImages.card2,
     cardImages.card3,
     cardImages.card4,
-    "/board-delimiter.png",
-    "/cardback-flipped.png",
-    "/cardback-normal.png",
+    `${process.env.NEXT_PUBLIC_BASE_URL}/board-delimiter.png`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`,
   ];
 
   useEffect(() => {
@@ -113,14 +113,14 @@ export default function BoardShowcase({ cardImages }) {
         <div className="flex justify-center gap-10 mb-8">
           {/* Top Left Card: flips to reveal card4 */}
           <FlippableCard
-            backImage="/cardback-flipped.png"
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`}
             frontImage={cardImages.card4}
             isRevealed={revealedCards.topLeft}
             alt="Card Back"
           />
           {/* Top Right Card: flips to reveal card3 */}
           <FlippableCard
-            backImage="/cardback-flipped.png"
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`}
             frontImage={cardImages.card3}
             isRevealed={revealedCards.topRight}
             alt="Card Back"
@@ -130,7 +130,7 @@ export default function BoardShowcase({ cardImages }) {
         {/* Board Delimiter */}
         <div className="flex justify-center my-8">
           <Image
-            src="/board-delimiter.png"
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}/board-delimiter.png`}
             alt="Board Delimiter"
             width={340}
             height={20}
@@ -142,14 +142,14 @@ export default function BoardShowcase({ cardImages }) {
         <div className="flex justify-center gap-10 mt-4">
           {/* Bottom Left Card: flips to reveal card1 */}
           <FlippableCard
-            backImage="/cardback-normal.png"
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`}
             frontImage={cardImages.card1}
             isRevealed={revealedCards.bottomLeft}
             alt="Card Back"
           />
           {/* Bottom Right Card: flips to reveal card2 */}
           <FlippableCard
-            backImage="/cardback-normal.png"
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`}
             frontImage={cardImages.card2}
             isRevealed={revealedCards.bottomRight}
             alt="Card Back"

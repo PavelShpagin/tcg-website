@@ -24,7 +24,7 @@ export default async function Home() {
       >
         <Image
           className="absolute mt-[160px] lg:mt-[calc(33.333vh-100px)] z-0 w-[400px] lg:w-[600px] h-auto max-w-[800px]"
-          src="/logo-full.svg"
+          src={`/logo-full.svg`}
           width={800}
           height={800}
           alt="Logo Full"

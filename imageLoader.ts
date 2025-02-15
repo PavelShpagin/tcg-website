@@ -15,5 +15,5 @@ export default function cloudflareLoader({
         params.push(`quality=${quality}`);
     }
     const paramsString = params.join(",");
-    return `/cdn-cgi/image/${paramsString}/${normalizeSrc(src)}`;
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/cdn-cgi/image/${paramsString}/${normalizeSrc(src)}`;
 }

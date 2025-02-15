@@ -82,7 +82,7 @@ export default function Rules() {
                 </h2>
                 <div className="flex py-8 gap-8 justify-center items-center">
                   <Image
-                    src="/rules-card.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules-card.png`}
                     alt="Card Structure"
                     width={300 * quality}
                     height={420 * quality}
@@ -199,7 +199,7 @@ export default function Rules() {
                 </div>
                 <div className="flex flex-col items-center pt-8 pb-4">
                   <Image
-                    src="/rules1.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules1.png`}
                     alt="Game Board"
                     width={600 * quality}
                     height={300 * quality}
@@ -239,7 +239,7 @@ export default function Rules() {
                 </ul>
                 <div className="flex justify-center">
                   <Image
-                    src="/rules2.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules2.png`}
                     alt="Before the Game"
                     width={440 * quality}
                     height={220 * quality}
@@ -283,7 +283,7 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center mt-4">
                     <Image
-                      src="/rules3.png"
+                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules3.png`}
                       alt="Set Phase"
                       width={480 * quality}
                       height={240 * quality}
@@ -310,7 +310,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src="/rules41.png"
+                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules41.png`}
                         alt="Play Card (Rules41)"
                         width={450 * quality}
                         height={300 * quality}
@@ -325,7 +325,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src="/rules43.png"
+                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules43.png`}
                         alt="Discard for Draw (Rules43)"
                         width={450 * quality}
                         height={300 * quality}
@@ -372,12 +372,12 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center">
                     <Image
-                      src="/rules5.png"
+                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules5.png`}
                       alt="Battle Phase (Rules5)"
                       width={440 * quality}
                       height={220 * quality}
                       className="w-[440px]"
-                    />
+                    /> 
                   </div>
                 </div>
                 <section id="notes" className="space-y-4 mt-4">
