@@ -8,10 +8,7 @@ export default async function CreateCard() {
   // Fetch images from the API and cache them for an hour
   const fetchImages = cache(async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`,
-      {
-        headers: { "Cache-Control": "max-age=3600" },
-      }
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`
     );
 
     if (!response.ok) {

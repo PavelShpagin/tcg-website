@@ -17,6 +17,8 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    loader: 'custom',
+    loaderFile: './imageLoader.ts',
   },
   env: {
     NEXT_PUBLIC_BASE_URL:
