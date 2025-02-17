@@ -6,7 +6,7 @@ import { Textarea } from "@components/ui/textarea";
 import { Label } from "@components/ui/label";
 import { Button } from "@components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Slider } from "@/components/ui/slider";
+import { Slider } from "@components/ui/slider";
 import CardTemplate from "@components/svg/card-template";
 import Selector from "@components/selector";
 import { useRouter } from "next/navigation";
@@ -32,7 +32,7 @@ export default function CardForm({ images }) {
     attack: "",
     health: "",
     description: "",
-    class: "",
+    class: "Blue",
   });
   const [imageScale, setImageScale] = useState(1);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
@@ -46,6 +46,9 @@ export default function CardForm({ images }) {
 
   const router = useRouter();
 
+  //==================================================
+  // Handlers for new card, uploading, etc.
+  //==================================================
   const handleNewCard = () => {
     if (!images || images.length === 0) {
       toast({
@@ -57,7 +60,6 @@ export default function CardForm({ images }) {
     }
 
     const nextImage = images[currentImageIndex.current];
-
     if (isNaN(currentImageIndex.current)) {
       currentImageIndex.current = 0;
     } else {
@@ -102,22 +104,6 @@ export default function CardForm({ images }) {
     };
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCardData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectorChange = (value) => {
-    setCardData((prev) => ({ ...prev, class: value }));
-  };
-
-  const handleFocus = (e) => {
-    const { name } = e.target;
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: null }));
-    }
-  };
-
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -143,6 +129,25 @@ export default function CardForm({ images }) {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCardData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectorChange = (value) => {
+    setCardData((prev) => ({ ...prev, class: value }));
+  };
+
+  const handleFocus = (e) => {
+    const { name } = e.target;
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
+    }
+  };
+
+  //==================================================
+  // Submit form & final card creation
+  //==================================================
   const handleSubmit = async (event) => {
     event.preventDefault();
     const newErrors = validateForm(cardData, activeTab);
@@ -152,17 +157,12 @@ export default function CardForm({ images }) {
     setUploading(true);
 
     try {
-      // Get the SVG element directly
       const svgElement = document.querySelector("#card-template");
-      if (!svgElement) {
-        console.error("SVG element not found");
-        throw new Error("SVG element not found");
-      }
+      if (!svgElement) throw new Error("SVG element not found");
 
-      // Convert the SVG's image href to base64
+      // Convert the SVG's <image> href to base64
       const imageElement = svgElement.querySelector("image");
       let base64Image = null;
-
       if (imageElement && imageElement.href.baseVal) {
         try {
           const response = await fetch(imageElement.href.baseVal);
@@ -172,32 +172,27 @@ export default function CardForm({ images }) {
             reader.onloadend = () => resolve(reader.result);
             reader.readAsDataURL(blob);
           });
-
           imageElement.setAttribute("href", base64Image);
         } catch (error) {
           console.error("Error converting image to base64:", error);
         }
       }
 
-      // Convert SVG element to base64
+      // Convert entire SVG to base64
       const svgString = new XMLSerializer().serializeToString(svgElement);
       const svgBlob = new Blob([svgString], {
         type: "image/svg+xml;charset=utf-8",
       });
       const svgUrl = URL.createObjectURL(svgBlob);
 
-      // Create canvas
+      // Draw on canvas -> export to .webp
       const canvas = document.createElement("canvas");
       canvas.width = 368 * 4;
       canvas.height = 500 * 4;
-      canvas.style.width = 368 * 4 + "px";
-      canvas.style.height = 500 * 4 + "px";
-
       const ctx = canvas.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
 
-      // Draw SVG as an image on the canvas, then convert to webp
       const img = new Image();
       const webpBlob = await new Promise((resolve, reject) => {
         img.onload = () => {
@@ -219,7 +214,7 @@ export default function CardForm({ images }) {
         img.src = svgUrl;
       });
 
-      // Prepare form data
+      // Build POST form data
       const formData = new FormData(event.target);
       if (base64Image) {
         const imageBlob = await (await fetch(base64Image)).blob();
@@ -237,7 +232,6 @@ export default function CardForm({ images }) {
       formData.append("type", activeTab);
       formData.append("cost", cardData.cost);
 
-      // Send the POST request
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`,
         formData,
@@ -247,9 +241,6 @@ export default function CardForm({ images }) {
       );
 
       if (response.status >= 200 && response.status < 300) {
-        // Ensure any state updates or data fetching is completed here
-        // await new Promise((resolve) => setTimeout(resolve, 5000)); // Optional delay for server processing
-
         toast({
           title: "Success",
           description: "You successfully created a card.",
@@ -273,6 +264,9 @@ export default function CardForm({ images }) {
     }
   };
 
+  //==================================================
+  // Drag & Scale
+  //==================================================
   const handleMouseDown = (e) => {
     if (uploading) return;
     setIsDragging(true);
@@ -335,17 +329,16 @@ export default function CardForm({ images }) {
     }
   }, [images?.length]);
 
+  //==================================================
+  // Render
+  //==================================================
   return (
-    <div>
-      <div className="space-x-1 ml-7">
-        {["Minion", "Spell", "Stage"].map((tab, index) => (
+    <div className="relative mt-12 flex flex-col px-3 sm:px-6 md:px-12 pt-[8vh] sm:pt-[20vh] md:pt-[calc(70px+6vh)] pb-[4vh] sm:pb-[5.8vh] xl:scale-[100%] md:scale-[70%] scale-100">
+      {/* Tab Switcher */}
+      <div className="flex space-x-2 ml-3 ml-6">
+        {["Minion", "Spell", "Stage"].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-2 text-lg font-bold rounded-t-xl backdrop-blur-xl shadow-lg ${
-              activeTab === tab
-                ? "bg-black text-white bg-opacity-60"
-                : "bg-black text-gray-300 bg-opacity-30"
-            } ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
             onClick={() => {
               if (!uploading) {
                 setActiveTab(tab);
@@ -353,211 +346,321 @@ export default function CardForm({ images }) {
               }
             }}
             disabled={uploading}
+            className={`
+              px-3 sm:px-5 py-1.5 sm:py-2 text-base sm:text-lg font-semibold rounded-t-xl 
+              border-[2.5px] border-transparent 
+              backdrop-blur-sm bg-[var(--primary)]
+              hover:bg-opacity-50 transition-colors duration-300
+              ${
+                activeTab === tab
+                  ? "bg-opacity-30 text-[var(--foreground)] border-l-[var(--create-card-border)] border-r-[var(--create-card-border)] border-t-[var(--create-card-border)]"
+                  : "bg-opacity-20 text-gray-200 text-opacity-70"
+              }
+              ${uploading ? "opacity-50 cursor-not-allowed" : ""}
+            `}
           >
             {tab}
           </button>
         ))}
       </div>
-      <div className="bg-secondary-background bg-opacity-60 backdrop-blur-xl border-[1.5px] border-secondary-border pl-10 pt-10 pr-10 pb-3 rounded-3xl shadow-lg flex space-x-10">
-        <div className="flex flex-col space-y-4">
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div
-                  className={
-                    uploading || isDisabled(activeTab, "level")
-                      ? "opacity-30"
-                      : undefined
-                  }
-                >
-                  <Label>
-                    LvL
-                    <span className="text-red-400 ml-1">{errors.level}</span>
-                  </Label>
-                  <Input
-                    name="level"
-                    type="number"
-                    placeholder="LvL"
-                    disabled={uploading || isDisabled(activeTab, "level")}
-                    value={cardData.level}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    className={errors.level && "border-2 border-red-400"}
-                  />
-                </div>
-                <div className={uploading ? "opacity-30" : undefined}>
-                  <Label>
-                    Card Name
-                    <span className="text-red-400 ml-1">{errors.title}</span>
-                  </Label>
-                  <Input
-                    name="title"
-                    type="text"
-                    placeholder="Enter card name"
-                    value={cardData.title}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    className={errors.title && "border-2 border-red-400"}
-                    disabled={uploading}
-                  />
-                </div>
-                <div className={uploading ? "opacity-30" : undefined}>
-                  <Label>
-                    Cost
-                    <span className="text-red-400 ml-1">{errors.cost}</span>
-                  </Label>
-                  <Input
-                    name="cost"
-                    type="text"
-                    placeholder="Cost"
-                    value={cardData.cost}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    className={errors.cost && "border-2 border-red-400"}
-                    disabled={uploading}
-                  />
-                </div>
-                <div className={uploading ? "opacity-30" : undefined}>
-                  <Label>
-                    Class
-                    <span className="text-red-400 ml-1">{errors.class}</span>
-                  </Label>
-                  {cardData.class && (
-                    <Selector
-                      name="class"
-                      placeholder="Blue"
-                      items={["Blue", "Purple"]}
-                      value={cardData.class}
-                      onChange={handleSelectorChange}
-                      onFocus={handleFocus}
-                      disabled={uploading}
-                    />
-                  )}
-                </div>
-              </div>
-              <div className={uploading ? "opacity-30" : undefined}>
-                <Label>Card Text</Label>
-                <Textarea
-                  name="description"
-                  rows="3"
-                  placeholder="Enter card text"
-                  value={cardData.description}
-                  onChange={handleInputChange}
-                  disabled={uploading}
-                ></Textarea>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div
-                  className={
-                    uploading || isDisabled(activeTab, "attack")
-                      ? "opacity-30"
-                      : undefined
-                  }
-                >
-                  <Label>
-                    Attack
-                    <span className="text-red-400 ml-1">{errors.attack}</span>
-                  </Label>
-                  <Input
-                    name="attack"
-                    type="number"
-                    placeholder="Attack"
-                    disabled={isDisabled(activeTab, "attack")}
-                    value={cardData.attack}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    className={errors.attack && "border-2 border-red-400"}
-                  />
-                </div>
-                <div
-                  className={
-                    uploading || isDisabled(activeTab, "health")
-                      ? "opacity-30"
-                      : undefined
-                  }
-                >
-                  <Label>
-                    Health
-                    <span className="text-red-400 ml-1">{errors.health}</span>
-                  </Label>
-                  <Input
-                    name="health"
-                    type="number"
-                    placeholder="Health"
-                    disabled={isDisabled(activeTab, "health") || uploading}
-                    value={cardData.health}
-                    onChange={handleInputChange}
-                    onFocus={handleFocus}
-                    className={
-                      errors.health ? "border-2 border-red-400" : undefined
-                    }
-                  />
-                </div>
-              </div>
-              <div
-                className={`grid w-full max-w-sm gap-1.5 ${
-                  uploading ? "opacity-30" : undefined
-                }`}
-              >
-                <Label>Upload Image</Label>
-                <Input
-                  type="file"
-                  className="font-medium text-white [&::file-selector-button]:text-gray-300 text-opacity-100 font-bold"
-                  onChange={handleImageChange}
-                  onFocus={handleFocus}
-                  disabled={uploading}
-                />
-              </div>
-              <div className="flex space-x-4">
-                <Button
-                  type="submit"
-                  variant="secondary"
-                  size="md"
-                  className="font-semibold"
-                  disabled={uploading}
-                >
-                  Submit
-                </Button>
-                <Button
-                  type="button"
-                  size="md"
-                  variant="outline"
-                  className="font-semibold"
-                  onClick={handleNewCard}
-                  disabled={uploading}
-                >
-                  New
-                </Button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className="flex flex-col justify-center relative group">
-          <CardTemplate
-            imageUrl={cardImage}
-            scale={imageScale}
-            position={imagePosition}
-            isDragging={isDragging}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            cardData={cardData}
-            type={activeTab}
-            disabled={uploading}
-            flip={isFlipped}
-            //viewBox="0 0 368 500"
-            // preserveAspectRatio="xMidYMid meet"
-          />
 
-          <div className="flex justify-center items-center space-x-2 mt-2.5">
+      {/* Main Container */}
+      <div
+        className="
+          flex flex-col md:flex-row
+          bg-[var(--create-card-bg)] bg-opacity-[88%]
+          border-[3.5px] border-[var(--create-card-border)]
+          border-opacity-[33%]
+          rounded-2xl
+          overflow-hidden
+          shadow-2xl
+        "
+      >
+        {/* Left Column: Form Fields */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full md:w-1/2 px-3 sm:px-5 py-4 sm:py-6 space-y-4 sm:space-y-6"
+        >
+          <div className="grid grid-cols-2 gap-3">
+            {/* LvL */}
+            <div>
+              <Label className="text-gray-100 font-bold">
+                LvL
+                {errors.level && (
+                  <span className="text-red-400 text-sm ml-1">{errors.level}</span>
+                )}
+              </Label>
+              <Input
+                name="level"
+                type="number"
+                placeholder="Level"
+                disabled={uploading || isDisabled(activeTab, "level")}
+                value={cardData.level}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                  placeholder:text-gray-400
+                  ${errors.level ? "border-red-500" : ""}
+                `}
+              />
+            </div>
+
+            {/* Card Name */}
+            <div>
+              <Label className="text-gray-100 font-bold">
+                Card Name
+                {errors.title && (
+                  <span className="text-red-400 text-sm ml-1">
+                    {errors.title}
+                  </span>
+                )}
+              </Label>
+              <Input
+                name="title"
+                type="text"
+                placeholder="Enter card name"
+                disabled={uploading}
+                value={cardData.title}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                  placeholder:text-gray-400
+                  ${errors.title ? "border-red-500" : ""}
+                `}
+              />
+            </div>
+
+            {/* Cost */}
+            <div>
+              <Label className="text-gray-100 font-bold">
+                Cost
+                {errors.cost && (
+                  <span className="text-red-400 text-sm ml-1">{errors.cost}</span>
+                )}
+              </Label>
+              <Input
+                name="cost"
+                type="text"
+                placeholder="Cost"
+                disabled={uploading}
+                value={cardData.cost}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                  placeholder:text-gray-400
+                  ${errors.cost ? "border-red-500" : ""}
+                `}
+              />
+            </div>
+
+            {/* Class Selector */}
+            <div>
+              <Label className="text-gray-100 font-bold">
+                Class
+                {errors.class && (
+                  <span className="text-red-400 text-sm ml-1">
+                    {errors.class}
+                  </span>
+                )}
+              </Label>
+              <Selector
+                name="class"
+                items={["Blue", "Purple"]}
+                value={cardData.class}
+                onChange={handleSelectorChange}
+                disabled={uploading}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                `}
+              />
+            </div>
+          </div>
+
+          {/* Card Text */}
+          <div>
+            <Label className="text-gray-100 font-bold">Card Text</Label>
+            <Textarea
+              name="description"
+              rows={3}
+              placeholder="Enter card text..."
+              disabled={uploading}
+              value={cardData.description}
+              onChange={handleInputChange}
+              className={`
+                bg-[var(--background)] bg-opacity-80
+                text-[var(--foreground)]
+                border-[2px] border-transparent
+                focus:border-[var(--light-delimiter)]
+                transition-colors duration-300
+                placeholder:text-gray-400
+                w-full
+              `}
+            />
+          </div>
+
+          {/* Attack / Health */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-gray-100 font-bold">
+                Attack
+                {errors.attack && (
+                  <span className="text-red-400 text-sm ml-1">
+                    {errors.attack}
+                  </span>
+                )}
+              </Label>
+              <Input
+                name="attack"
+                type="number"
+                placeholder="Attack"
+                disabled={uploading || isDisabled(activeTab, "attack")}
+                value={cardData.attack}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                  placeholder:text-gray-400
+                  ${errors.attack ? "border-red-500" : ""}
+                `}
+              />
+            </div>
+            <div>
+              <Label className="text-gray-100 font-bold">
+                Health
+                {errors.health && (
+                  <span className="text-red-400 text-sm ml-1">
+                    {errors.health}
+                  </span>
+                )}
+              </Label>
+              <Input
+                name="health"
+                type="number"
+                placeholder="Health"
+                disabled={uploading || isDisabled(activeTab, "health")}
+                value={cardData.health}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                className={`
+                  bg-[var(--background)] bg-opacity-80
+                  text-[var(--foreground)]
+                  border-[2px] border-transparent
+                  focus:border-[var(--light-delimiter)]
+                  transition-colors duration-300
+                  placeholder:text-gray-400
+                  ${errors.health ? "border-red-500" : ""}
+                `}
+              />
+            </div>
+          </div>
+
+          {/* Upload Image */}
+          <div>
+            <Label className="text-gray-100 font-bold">Upload Image</Label>
+            <Input
+              type="file"
+              disabled={uploading}
+              onChange={handleImageChange}
+              className={`
+                cursor-pointer
+                bg-[var(--background)] bg-opacity-80
+                text-gray-400
+                file:cursor-pointer file:mr-4
+                file:text-white
+                border-[2px] border-transparent
+                focus:border-[var(--light-delimiter)]
+                transition-colors duration-300
+                placeholder:text-gray-400
+              `}
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex space-x-4 pt-2">
+            <Button
+              type="submit"
+              disabled={uploading}
+              className="
+                button-purple font-bold px-6 py-2
+                bg-gradient-to-r from-gray-600 to-gray-500
+                hover:from-gray-500 hover:to-gray-400
+                border-2 border-gray-300
+                rounded-xl
+                shadow-md
+              "
+            >
+              Submit
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              disabled={uploading}
+              onClick={handleNewCard}
+              className="
+                button-login font-bold px-6 py-2
+                bg-white bg-opacity-10
+                hover:bg-opacity-20
+                border-2 border-gray-300
+                rounded-xl
+                shadow-md
+              "
+            >
+              New
+            </Button>
+          </div>
+        </form>
+
+        {/* Right Column: Card Preview */}
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-3 sm:p-6">
+            <CardTemplate
+              imageUrl={cardImage}
+              scale={imageScale}
+              position={imagePosition}
+              isDragging={isDragging}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              cardData={cardData}
+              type={activeTab}
+              disabled={uploading}
+              flip={isFlipped}
+            />
+
+          {/* Controls for scale & flip */}
+          <div className="mt-4 flex items-center gap-4">
             <div
-              className={`flex items-center justify-center gap-3 
-                p-1.5 px-2.5 
-                backdrop-blur-[1px] rounded-full 
-                transition-all duration-300 
-                group-hover:backdrop-blur-[1px]
-                ${uploading ? "opacity-30" : ""}`}
+              className={`
+                flex items-center px-3 py-2
+                bg-[var(--background)] bg-opacity-60
+                border-2 border-[var(--light-delimiter)]
+                rounded-full
+                ${uploading ? "opacity-40" : ""}
+              `}
             >
               <Slider
                 value={[imageScale]}
@@ -566,14 +669,22 @@ export default function CardForm({ images }) {
                 max={minScale + 0.5}
                 step={0.01}
                 disabled={uploading}
+                className="w-28"
               />
             </div>
+
             <button
               onClick={handleFlip}
-              className={`w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center ${uploading ? "opacity-30" : ""}`}
               disabled={uploading}
+              className={`
+                w-10 h-10 flex items-center justify-center 
+                rounded-full shadow-md 
+                bg-gray-600 bg-opacity-70 text-white
+                hover:bg-opacity-90 transition-colors duration-300
+                ${uploading ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+              `}
             >
-              <FaArrowsAltH disabled={uploading} />
+              <FaArrowsAltH />
             </button>
           </div>
         </div>

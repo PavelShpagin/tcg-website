@@ -69,8 +69,7 @@ export async function POST(request) {
     const supabase = createClient();
 
     const { data: user, error: userError } = await supabase.auth.getUser();
-    console.log("user", user, userError);
-    if (userError) throw new Error(userError.message);
+    console.log("!!!user", user, userError);
 
     const data = await request.formData();
     const cardFile = data.get("card_file");
@@ -79,16 +78,14 @@ export async function POST(request) {
     const [cardImageUrl, imageUrl, isAdminData] = await Promise.all([
       uploadFileToBucket(cardFile, "official-images/card-images"),
       uploadFileToBucket(imageFile, "official-images/images"),
-      supabase
+      (user.user) ? supabase
         .from("user_roles")
         .select("*")
         .eq("user_id", user.user.id)
-        .eq("role_id", 1),
+        .eq("role_id", 1) : null,
     ]);
 
-    if (isAdminData.error) throw new Error(isAdminData.error.message);
-
-    const isAdmin = isAdminData.data.length > 0;
+    const isAdmin = (user.user && isAdminData?.data?.length > 0) || false;
 
     const type = data.get("type");
     const tableConfig = {
@@ -116,7 +113,7 @@ export async function POST(request) {
       description: data.get("description"),
       cost: data.get("cost"),
       card_img: cardImageUrl,
-      owner_id: user.user.id,
+      owner_id: (user.user) ? user.user.id : null,
       img: imageUrl,
       is_official: isAdmin,
       scale: data.get("scale"),

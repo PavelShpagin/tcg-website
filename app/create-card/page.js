@@ -1,9 +1,6 @@
 import { cache } from "react";
 import CardForm from "@components/card-form";
 
-// Force the page to render at request time (dynamic)
-export const dynamic = "force-dynamic";
-
 export default async function CreateCard() {
   // Fetch images from the API and cache them for an hour
   const fetchImages = cache(async () => {
@@ -28,9 +25,9 @@ export default async function CreateCard() {
 
   return (
     <div
-      className="bg-cover flex flex-col justify-center items-center"
-      style={{ backgroundImage: "url('/create-card-bg.png')", height: "100vh" }}
+      className="bg-cover bg-fixed bg-center bg-[url('/create-card-bg.png')] flex flex-col justify-center items-center md:overflow-hidden md:h-screen"
     >
+      <div className="fixed inset-0 bg-black/25 backdrop-blur-sm"></div>
       <CardForm images={images} />
     </div>
   );

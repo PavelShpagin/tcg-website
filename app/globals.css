@@ -11,9 +11,8 @@
 
 
     /* Main Palette */
-    --primary: #1e293b;
-    --secondary: #334155;
-    --accent: #3b82f6;
+    --primary: rgb(30, 41, 59);
+    --secondary: rgb(18, 21, 36);
 
     /* Footer Palette */
     --footer-bg: rgba(15, 15, 15, 1);
@@ -22,10 +21,18 @@
     --footer-link: rgba(160, 160, 160, 0.9);
     --footer-link-hover: rgba(255, 255, 255, 1);
     --footer-divider: rgba(75, 85, 99, 0.6);
-    --light-delimiter: rgba(75, 85, 99, 0.6);
+    --light-delimiter: rgba(59, 68, 82, 0.6);
 
     /* Showcase Section */
     --showcase-bg: #1216227a;
+    --create-card-bg: rgb(25, 33, 54);
+    /*88*/
+    --create-card-border: rgb(18, 21, 36);
+    /* 33 */
+
+    /* New variable */
+    --select-bg-rgb: rgb(17, 24, 39);
+    /* dark blue-gray color */
   }
 
   @font-face {
