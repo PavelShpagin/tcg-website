@@ -333,7 +333,7 @@ export default function CardForm({ images }) {
   // Render
   //==================================================
   return (
-    <div className="relative mt-12 flex flex-col px-3 sm:px-6 md:px-12 pt-[8vh] sm:pt-[20vh] md:pt-[calc(70px+6vh)] pb-[4vh] sm:pb-[5.8vh] xl:scale-[100%] md:scale-[70%] scale-100">
+    <div className="relative mt-12 flex flex-col px-3 sm:px-6 md:px-12 pt-[8vh] sm:pt-[20vh] md:pt-[calc(70px+6vh)] pb-[4vh] sm:pb-[5.8vh] xl:scale-[80%] 2xl:scale-[100%] md:scale-[70%] scale-100">
       {/* Tab Switcher */}
       <div className="flex space-x-2 ml-3 ml-6">
         {["Minion", "Spell", "Stage"].map((tab) => (

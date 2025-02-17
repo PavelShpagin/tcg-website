@@ -48,7 +48,7 @@ export default function Rules() {
             Rules
           </h1>
           <div className="gray-delimiter z-10 w-full mt-8"></div>
-          <div className="w-full bg-[var(--showcase-bg)] bg-opacity-80 z-10 pb-12">
+          <div className="w-full bg-[var(--showcase-bg)] bg-opacity-80 z-10 pb-12 px-4">
             <div className="max-w-5xl mx-auto space-y-12 mt-12">
               {/* Game Overview */}
               <section id="overview">
@@ -80,15 +80,15 @@ export default function Rules() {
                 >
                   Card Structure
                 </h2>
-                <div className="flex py-8 gap-8 justify-center items-center">
+                <div className="flex flex-col md:flex-row py-8 gap-8 justify-center items-center">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules-card.png`}
                     alt="Card Structure"
                     width={300 * quality}
                     height={420 * quality}
-                    className="w-[300px]"
+                    className="w-[250px] md:w-[300px]"
                   />
-                  <div>
+                  <div className="px-4 md:px-0">
                     <div className="space-y-2 mb-4">
                       <p>
                         <strong className="red-box">Level:</strong> Used for

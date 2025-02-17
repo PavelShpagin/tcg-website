@@ -19,9 +19,14 @@ import {
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCardsOpen, setIsCardsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleCards = () => {
+    setIsCardsOpen(!isCardsOpen);
   };
 
   return (
@@ -54,9 +59,39 @@ export default function MobileMenu() {
           <Link href="/rules" className="navbar-link">
             Rules
           </Link>
-          <Link href="/cards/official" className="navbar-link">
-            Cards
-          </Link>
+          <div className="flex flex-col">
+            <button 
+              onClick={toggleCards}
+              className="navbar-link flex items-center"
+            >
+              Cards
+              <svg
+                className={`w-4 h-4 transition-transform duration-200 ml-2 ${
+                  isCardsOpen ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {isCardsOpen && (
+              <div className="flex flex-col pl-4">
+                <Link href="/cards/official" className="navbar-link">
+                  Official
+                </Link>
+                <Link href="/cards/custom" className="navbar-link">
+                  Custom
+                </Link>
+              </div>
+            )}
+          </div>
           {/* <Link href="/news" className="navbar-link">
             News
           </Link> */}
