@@ -38,7 +38,15 @@ export async function GET() {
     const allImages = [...minions.data, ...spells.data, ...stages.data];
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    return new Response(JSON.stringify(allImages), { status: 200 });
+    return new Response(JSON.stringify(allImages), {
+      status: 200,
+      /*headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, no-cache, proxy-revalidate, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }*/
+    });
   } catch (error) {
     console.error("Failed to fetch images", error);
     return new Response(JSON.stringify({ error: error.message }), {

@@ -1,9 +1,25 @@
 import CardGallery from "@components/card-gallery";
 import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
+/*
+export const revalidate = 1;
 
-export default async function CardsOfficial() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/custom`);
+export const dynamic = 'force-dynamic'
+
+export const fetchCache = 'force-no-store'
+
+export const dynamicParams = true
+*/
+export default async function CardsCustom() {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/custom`,
+    {
+      headers: {
+        "Cache-Control": "no-store, must-revalidate",
+        "CDN-Cache-Control": "no-store",
+      }
+    }
+  );
   const cards = await response.json();
 
   return (

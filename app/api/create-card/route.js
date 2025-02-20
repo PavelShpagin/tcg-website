@@ -1,10 +1,8 @@
 import "server-only";
 import { createClient } from "@/utils/supabase/server";
 import { v4 as uuidv4 } from "uuid";
-import { revalidatePath } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-export const dynamic = "force-dynamic";
 
 async function uploadFileToBucket(file, bucketName) {
   const supabase = createClient();
@@ -150,11 +148,11 @@ export async function POST(request) {
 
     if (minionClassError) throw new Error(minionClassError.message);
 
-    revalidatePath("/cards/custom");
+    revalidatePath('/cards/custom', 'page');
+    revalidateTag('custom-cards');
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error(

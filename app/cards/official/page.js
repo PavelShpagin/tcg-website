@@ -2,6 +2,10 @@ import CardGallery from "@components/card-gallery";
 import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
 
+export const revalidate = 60;
+
+export const dynamicParams = true;
+
 export default async function CardsOfficial() {
 
   const response = await fetch(
