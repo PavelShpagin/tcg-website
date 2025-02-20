@@ -246,6 +246,7 @@ export default function CardForm({ images }) {
           variant: "success",
         });
         router.push("/cards/custom");
+        router.refresh(); // testing
       } else {
         toast({
           title: "Error",
