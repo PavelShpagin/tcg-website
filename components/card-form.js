@@ -17,6 +17,7 @@ import {
   constrainPosition,
 } from "@utils/image-utils";
 import { validateForm, isDisabled } from "@utils/form-utils";
+import { autofillPrompt } from "@utils/autofill-prompt";
 
 export default function CardForm({ images }) {
   const [imageFile, setImageFile] = useState(null);
@@ -262,6 +263,31 @@ export default function CardForm({ images }) {
       });
       setUploading(false);
     }
+  };
+
+  const handleAutofill = async () => {
+    setUploading(true);
+
+    // Dummy response for testing
+    const dummyResponse = {
+      class: "Blue",
+      type: "Minion",
+      title: "Tidal Overlord",
+      level: "6",
+      cost: "Sacrifice a minion",
+      description: "Tapped enemy minions are 1/1",
+      attack: "6",
+      health: "6",
+    };
+
+    // Simulate API call delay
+    setTimeout(() => {
+      setCardData((prev) => ({
+        ...prev,
+        ...dummyResponse,
+      }));
+      setUploading(false);
+    }, 1000);
   };
 
   //==================================================
@@ -630,6 +656,16 @@ export default function CardForm({ images }) {
               "
             >
               New
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              disabled={uploading}
+              onClick={handleAutofill}
+              className="button-autofill font-bold px-6 py-2"
+            >
+              AI Autofill
             </Button>
           </div>
         </form>

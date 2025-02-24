@@ -39,10 +39,7 @@ export async function GET() {
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     return new Response(JSON.stringify(allImages), { 
-      status: 200,
-      headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600'
-      }
+      status: 200
     });
   } catch (error) {
     console.error("Failed to fetch images", error);

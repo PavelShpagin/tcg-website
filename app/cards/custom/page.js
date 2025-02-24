@@ -1,23 +1,24 @@
 import CardGallery from "@components/card-gallery";
 import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
-/*
-export const revalidate = 1;
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
-export const fetchCache = 'force-no-store'
+export const dynamicParams = true;
 
-export const dynamicParams = true
-*/
+/*export const headers = {
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};*/
+
 export default async function CardsCustom() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/custom`,
     {
-      headers: {
-        "Cache-Control": "no-store, must-revalidate",
-        "CDN-Cache-Control": "no-store",
-      }
+      // Ensure no caching at the fetch level:
+      cache: 'no-store',
+      next: { revalidate: 0 }
     }
   );
   const cards = await response.json();

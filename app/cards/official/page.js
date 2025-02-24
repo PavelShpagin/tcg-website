@@ -2,9 +2,7 @@ import CardGallery from "@components/card-gallery";
 import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
 
-export const revalidate = 60;
-
-export const dynamicParams = true;
+export const dynamic = 'force-dynamic'
 
 export default async function CardsOfficial() {
 

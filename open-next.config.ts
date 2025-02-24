@@ -3,7 +3,7 @@
 import incrementalCache from "@opennextjs/cloudflare/kv-cache";
 import memoryQueue from "@opennextjs/cloudflare/memory-queue";
 
-const config: OpenNextConfig = {
+const config = {
   default: {
     override: {
       wrapper: "cloudflare-node",

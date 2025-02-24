@@ -38,13 +38,20 @@ export async function GET() {
     const allImages = [...minions.data, ...spells.data, ...stages.data];
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
+    console.log(allImages);
+
     return new Response(JSON.stringify(allImages), {
       status: 200,
-      /*headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, no-cache, proxy-revalidate, must-revalidate',
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0',
+        'CDN-Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0',
         'Pragma': 'no-cache',
         'Expires': '0'
+      }
+      /*headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
       }*/
     });
   } catch (error) {

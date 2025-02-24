@@ -154,4 +154,24 @@
     inset: 10%;
     z-index: -1;
   }
+
+  .button-autofill {
+    @apply text-white py-3 px-6;
+    @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500;
+    @apply border-[2.5px] border-purple-300/50 hover:border-purple-200/70;
+    @apply shadow-custom-purple hover:shadow-custom-purple-hover;
+    @apply backdrop-blur-sm hover:-translate-y-0.5;
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/40 before:to-indigo-500/40;
+    @apply before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100;
+    @apply after:absolute after:inset-0 after:bg-[url('https://assets.codepen.io/13471/sparkles.gif')] after:bg-cover after:opacity-60 after:rounded-xl after:mix-blend-soft-light;
+    @apply active:scale-95 active:shadow-inner;
+  }
+
+  .shadow-custom-green {
+    @apply shadow-lg shadow-green-500/50;
+  }
+
+  .shadow-custom-green-hover {
+    @apply shadow-xl shadow-green-400/60;
+  }
 }
