@@ -82,7 +82,7 @@ export default function Rules() {
                 </h2>
                 <div className="flex flex-col md:flex-row py-8 gap-8 justify-center items-center">
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules-card.png`}
+                    src={`/rules-card.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                     alt="Card Structure"
                     width={300 * quality}
                     height={420 * quality}
@@ -199,7 +199,7 @@ export default function Rules() {
                 </div>
                 <div className="flex flex-col items-center pt-8 pb-4">
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules1.png`}
+                    src={`/rules1.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                     alt="Game Board"
                     width={600 * quality}
                     height={300 * quality}
@@ -239,7 +239,7 @@ export default function Rules() {
                 </ul>
                 <div className="flex justify-center">
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules2.png`}
+                    src={`/rules2.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                     alt="Before the Game"
                     width={440 * quality}
                     height={220 * quality}
@@ -283,7 +283,7 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center mt-4">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules3.png`}
+                      src={`/rules3.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                       alt="Set Phase"
                       width={480 * quality}
                       height={240 * quality}
@@ -310,7 +310,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules41.png`}
+                        src={`/rules41.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                         alt="Play Card (Rules41)"
                         width={450 * quality}
                         height={300 * quality}
@@ -325,7 +325,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules43.png`}
+                        src={`/rules43.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                         alt="Discard for Draw (Rules43)"
                         width={450 * quality}
                         height={300 * quality}
@@ -372,7 +372,7 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules5.png`}
+                      src={`/rules5.png`} // ${process.env.NEXT_PUBLIC_BASE_URL}
                       alt="Battle Phase (Rules5)"
                       width={440 * quality}
                       height={220 * quality}

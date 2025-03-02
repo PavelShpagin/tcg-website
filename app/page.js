@@ -28,7 +28,6 @@ export default async function Home() {
           width={800}
           height={800}
           alt="Logo Full"
-          priority
         />
         <div className="z-10 flex flex-col items-center max-w-[90%]">
           <div className="mt-[350px] lg:mt-[calc(66.666vh-100px)] text-center">

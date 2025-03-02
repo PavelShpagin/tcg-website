@@ -20,7 +20,7 @@ const AuthStatus = () => {
       }
       if (data.user) {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${data.user.id}`
+          `/api/users/${data.user.id}`//${process.env.NEXT_PUBLIC_BASE_URL}
         );
         const result = await response.json();
         setUser(result.user);
