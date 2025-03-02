@@ -1,6 +1,6 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+// import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
  
-initOpenNextCloudflareForDev();
+// initOpenNextCloudflareForDev();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,16 +9,21 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "fonts.googleapis.com",
-        pathname: "/**",
+        pathname: "/**"
       },
       {
         protocol: "https",
         hostname: "fkmywxxthxwsyjqngcgn.supabase.co",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/**",
+      },
     ],
-    loader: 'custom',
-    loaderFile: './imageLoader.ts',
+    // loader: 'custom',
+    // loaderFile: './imageLoader.ts',
   },
   env: {
     NEXT_PUBLIC_BASE_URL:

@@ -4,7 +4,7 @@ import Footer from "@components/footer";
 
 export const dynamic = 'force-dynamic';
 
-export const dynamicParams = true;
+// export const dynamicParams = true;
 
 /*export const headers = {
   'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -18,7 +18,7 @@ export default async function CardsCustom() {
     {
       // Ensure no caching at the fetch level:
       cache: 'no-store',
-      next: { revalidate: 0 }
+      // next: { revalidate: 0 }
     }
   );
   const cards = await response.json();
