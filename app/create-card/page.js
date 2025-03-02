@@ -5,10 +5,7 @@ export default async function CreateCard() {
   // Fetch images from the API and cache them for an hour
   const fetchImages = cache(async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`,
-      {
-        headers: { "Cache-Control": "max-age=3600" },
-      }
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`
     );
 
     if (!response.ok) {
@@ -28,9 +25,9 @@ export default async function CreateCard() {
 
   return (
     <div
-      className="bg-cover flex flex-col justify-center items-center"
-      style={{ backgroundImage: "url('/create-card-bg.png')", height: "100vh" }}
+      className="bg-cover bg-fixed bg-center bg-[url('/create-card-bg.png')] flex flex-col justify-center items-center md:overflow-hidden md:h-screen"
     >
+      <div className="fixed inset-0 bg-black/25 backdrop-blur-sm"></div>
       <CardForm images={images} />
     </div>
   );

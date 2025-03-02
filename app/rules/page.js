@@ -48,7 +48,7 @@ export default function Rules() {
             Rules
           </h1>
           <div className="gray-delimiter z-10 w-full mt-8"></div>
-          <div className="w-full bg-[var(--showcase-bg)] bg-opacity-80 z-10 pb-12">
+          <div className="w-full bg-[var(--showcase-bg)] bg-opacity-80 z-10 pb-12 px-4">
             <div className="max-w-5xl mx-auto space-y-12 mt-12">
               {/* Game Overview */}
               <section id="overview">
@@ -80,15 +80,15 @@ export default function Rules() {
                 >
                   Card Structure
                 </h2>
-                <div className="flex py-8 gap-8 justify-center items-center">
+                <div className="flex flex-col md:flex-row py-8 gap-8 justify-center items-center">
                   <Image
-                    src="/rules-card.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules-card.png`}
                     alt="Card Structure"
                     width={300 * quality}
                     height={420 * quality}
-                    className="w-[300px]"
+                    className="w-[250px] md:w-[300px]"
                   />
-                  <div>
+                  <div className="px-4 md:px-0">
                     <div className="space-y-2 mb-4">
                       <p>
                         <strong className="red-box">Level:</strong> Used for
@@ -199,7 +199,7 @@ export default function Rules() {
                 </div>
                 <div className="flex flex-col items-center pt-8 pb-4">
                   <Image
-                    src="/rules1.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules1.png`}
                     alt="Game Board"
                     width={600 * quality}
                     height={300 * quality}
@@ -239,7 +239,7 @@ export default function Rules() {
                 </ul>
                 <div className="flex justify-center">
                   <Image
-                    src="/rules2.png"
+                    src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules2.png`}
                     alt="Before the Game"
                     width={440 * quality}
                     height={220 * quality}
@@ -283,7 +283,7 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center mt-4">
                     <Image
-                      src="/rules3.png"
+                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules3.png`}
                       alt="Set Phase"
                       width={480 * quality}
                       height={240 * quality}
@@ -310,7 +310,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src="/rules41.png"
+                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules41.png`}
                         alt="Play Card (Rules41)"
                         width={450 * quality}
                         height={300 * quality}
@@ -325,7 +325,7 @@ export default function Rules() {
                     </p>
                     <div className="flex justify-center mt-2">
                       <Image
-                        src="/rules43.png"
+                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules43.png`}
                         alt="Discard for Draw (Rules43)"
                         width={450 * quality}
                         height={300 * quality}
@@ -372,12 +372,12 @@ export default function Rules() {
                   </p>
                   <div className="flex justify-center">
                     <Image
-                      src="/rules5.png"
+                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/rules5.png`}
                       alt="Battle Phase (Rules5)"
                       width={440 * quality}
                       height={220 * quality}
                       className="w-[440px]"
-                    />
+                    /> 
                   </div>
                 </div>
                 <section id="notes" className="space-y-4 mt-4">

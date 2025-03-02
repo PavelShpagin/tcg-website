@@ -11,9 +11,8 @@
 
 
     /* Main Palette */
-    --primary: #1e293b;
-    --secondary: #334155;
-    --accent: #3b82f6;
+    --primary: rgb(30, 41, 59);
+    --secondary: rgb(18, 21, 36);
 
     /* Footer Palette */
     --footer-bg: rgba(15, 15, 15, 1);
@@ -22,10 +21,18 @@
     --footer-link: rgba(160, 160, 160, 0.9);
     --footer-link-hover: rgba(255, 255, 255, 1);
     --footer-divider: rgba(75, 85, 99, 0.6);
-    --light-delimiter: rgba(75, 85, 99, 0.6);
+    --light-delimiter: rgba(59, 68, 82, 0.6);
 
     /* Showcase Section */
     --showcase-bg: #1216227a;
+    --create-card-bg: rgb(25, 33, 54);
+    /*88*/
+    --create-card-border: rgb(18, 21, 36);
+    /* 33 */
+
+    /* New variable */
+    --select-bg-rgb: rgb(17, 24, 39);
+    /* dark blue-gray color */
   }
 
   @font-face {
@@ -146,5 +153,25 @@
     position: absolute;
     inset: 10%;
     z-index: -1;
+  }
+
+  .button-autofill {
+    @apply text-white py-3 px-6;
+    @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500;
+    @apply border-[2.5px] border-purple-300/50 hover:border-purple-200/70;
+    @apply shadow-custom-purple hover:shadow-custom-purple-hover;
+    @apply backdrop-blur-sm hover:-translate-y-0.5;
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/40 before:to-indigo-500/40;
+    @apply before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100;
+    @apply after:absolute after:inset-0 after:bg-[url('https://assets.codepen.io/13471/sparkles.gif')] after:bg-cover after:opacity-60 after:rounded-xl after:mix-blend-soft-light;
+    @apply active:scale-95 active:shadow-inner;
+  }
+
+  .shadow-custom-green {
+    @apply shadow-lg shadow-green-500/50;
+  }
+
+  .shadow-custom-green-hover {
+    @apply shadow-xl shadow-green-400/60;
   }
 }

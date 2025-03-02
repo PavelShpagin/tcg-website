@@ -2,13 +2,13 @@ import CardGallery from "@components/card-gallery";
 import SelectedCard from "@components/selected-card";
 import Footer from "@components/footer";
 
+export const dynamic = 'force-dynamic'
+
 export default async function CardsOfficial() {
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/official`,
-    {
-      cache: "no-store",
-    }
-  );
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/cards/official`
+  )
   const cards = await response.json();
 
   return (

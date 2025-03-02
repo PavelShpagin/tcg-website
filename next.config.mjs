@@ -1,3 +1,7 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+ 
+initOpenNextCloudflareForDev();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -13,10 +17,13 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    loader: 'custom',
+    loaderFile: './imageLoader.ts',
   },
   env: {
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-  }
+    NEXT_PUBLIC_BASE_URL:
+      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8787",
+  },
 };
 
 export default nextConfig;

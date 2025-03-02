@@ -4,6 +4,17 @@ import FlippableCard from "@/components/flip-card";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
+// Helper component that preloads an array of image URLs
+function PreloadImages({ images }) {
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new window.Image(); 
+      img.src = src;
+    });
+  }, [images]);
+  return null;
+}
+
 export default function BoardShowcase({ cardImages }) {
   const [revealedCards, setRevealedCards] = useState({
     bottomLeft: false,
@@ -11,6 +22,17 @@ export default function BoardShowcase({ cardImages }) {
     bottomRight: false,
     topLeft: false,
   });
+
+  // Array of all image URLs that need preloading.
+  const preloadedImages = [
+    cardImages.card1,
+    cardImages.card2,
+    cardImages.card3,
+    cardImages.card4,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/board-delimiter.png`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`,
+  ];
 
   useEffect(() => {
     const timeouts = [];
@@ -36,7 +58,7 @@ export default function BoardShowcase({ cardImages }) {
         }, 0)
       );
 
-      // 2. Reveal top right after revealDelay.
+      // 2. Reveal top left after revealDelay.
       timeouts.push(
         setTimeout(() => {
           setRevealedCards((prev) => ({ ...prev, topLeft: true }));
@@ -50,7 +72,7 @@ export default function BoardShowcase({ cardImages }) {
         }, revealDelay * 2)
       );
 
-      // 4. Reveal top left after 3 * revealDelay.
+      // 4. Reveal top right after 3 * revealDelay.
       timeouts.push(
         setTimeout(() => {
           setRevealedCards((prev) => ({ ...prev, topRight: true }));
@@ -77,56 +99,63 @@ export default function BoardShowcase({ cardImages }) {
     }
 
     startCycle();
+
+    // Cleanup timeouts on component unmount.
+    return () => timeouts.forEach((t) => clearTimeout(t));
   }, []);
 
   return (
-    <div className="relative">
-      {/* Top Row Cards */}
-      <div className="flex justify-center gap-10 mb-8">
-        {/* Top Left Card: flips to reveal card4 */}
-        <FlippableCard
-          backImage="/cardback-flipped.png"
-          frontImage={cardImages.card4}
-          isRevealed={revealedCards.topLeft}
-          alt="Card Back"
-        />
-        {/* Top Right Card: flips to reveal card3 */}
-        <FlippableCard
-          backImage="/cardback-flipped.png"
-          frontImage={cardImages.card3}
-          isRevealed={revealedCards.topRight}
-          alt="Card Back"
-        />
-      </div>
+    <>
+      {/* Preload images on page load */}
+      <PreloadImages images={preloadedImages} />
+      <div className="relative">
+        {/* Top Row Cards */}
+        <div className="flex justify-center gap-10 mb-8">
+          {/* Top Left Card: flips to reveal card4 */}
+          <FlippableCard
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`}
+            frontImage={cardImages.card4}
+            isRevealed={revealedCards.topLeft}
+            alt="Card Back"
+          />
+          {/* Top Right Card: flips to reveal card3 */}
+          <FlippableCard
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-flipped.png`}
+            frontImage={cardImages.card3}
+            isRevealed={revealedCards.topRight}
+            alt="Card Back"
+          />
+        </div>
 
-      {/* Board Delimiter */}
-      <div className="flex justify-center my-8">
-        <Image
-          src="/board-delimiter.png"
-          alt="Board Delimiter"
-          width={340}
-          height={20}
-          className="opacity-80"
-        />
-      </div>
+        {/* Board Delimiter */}
+        <div className="flex justify-center my-8">
+          <Image
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}/board-delimiter.png`}
+            alt="Board Delimiter"
+            width={340}
+            height={20}
+            className="opacity-80"
+          />
+        </div>
 
-      {/* Bottom Row Cards */}
-      <div className="flex justify-center gap-10 mt-4">
-        {/* Bottom Left Card: flips to reveal card1 */}
-        <FlippableCard
-          backImage="/cardback-normal.png"
-          frontImage={cardImages.card1}
-          isRevealed={revealedCards.bottomLeft}
-          alt="Card Back"
-        />
-        {/* Bottom Right Card: flips to reveal card2 */}
-        <FlippableCard
-          backImage="/cardback-normal.png"
-          frontImage={cardImages.card2}
-          isRevealed={revealedCards.bottomRight}
-          alt="Card Back"
-        />
+        {/* Bottom Row Cards */}
+        <div className="flex justify-center gap-10 mt-4">
+          {/* Bottom Left Card: flips to reveal card1 */}
+          <FlippableCard
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`}
+            frontImage={cardImages.card1}
+            isRevealed={revealedCards.bottomLeft}
+            alt="Card Back"
+          />
+          {/* Bottom Right Card: flips to reveal card2 */}
+          <FlippableCard
+            backImage={`${process.env.NEXT_PUBLIC_BASE_URL}/cardback-normal.png`}
+            frontImage={cardImages.card2}
+            isRevealed={revealedCards.bottomRight}
+            alt="Card Back"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

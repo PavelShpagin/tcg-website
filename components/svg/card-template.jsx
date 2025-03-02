@@ -112,6 +112,8 @@ const CardTemplate = ({
       { pattern: "Passive:", gradient: "f" },
       { pattern: "Passive", gradient: "f" },
       { pattern: "Equip:", gradient: "f" },
+      { pattern: "Repeat 2 times:", gradient: "f" },
+      { pattern: "Repeat 3 times:", gradient: "f" },
     ];
 
     lines.forEach((line, lineIndex) => {

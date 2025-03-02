@@ -1,7 +1,7 @@
 import "server-only";
 import { createClient } from "@/utils/supabase/server";
 import { v4 as uuidv4 } from "uuid";
-import { revalidatePath } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 async function uploadFileToBucket(file, bucketName) {
@@ -67,7 +67,7 @@ export async function POST(request) {
     const supabase = createClient();
 
     const { data: user, error: userError } = await supabase.auth.getUser();
-
+    console.log("user", user, userError);
     if (userError) throw new Error(userError.message);
 
     const data = await request.formData();
@@ -77,16 +77,14 @@ export async function POST(request) {
     const [cardImageUrl, imageUrl, isAdminData] = await Promise.all([
       uploadFileToBucket(cardFile, "official-images/card-images"),
       uploadFileToBucket(imageFile, "official-images/images"),
-      supabase
+      (user.user) ? supabase
         .from("user_roles")
         .select("*")
         .eq("user_id", user.user.id)
-        .eq("role_id", 1),
+        .eq("role_id", 1) : null,
     ]);
 
-    if (isAdminData.error) throw new Error(isAdminData.error.message);
-
-    const isAdmin = isAdminData.data.length > 0;
+    const isAdmin = (user.user && isAdminData?.data?.length > 0) || false;
 
     const type = data.get("type");
     const tableConfig = {
@@ -114,7 +112,7 @@ export async function POST(request) {
       description: data.get("description"),
       cost: data.get("cost"),
       card_img: cardImageUrl,
-      owner_id: user.user.id,
+      owner_id: (user.user) ? user.user.id : null,
       img: imageUrl,
       is_official: isAdmin,
       scale: data.get("scale"),
@@ -151,11 +149,10 @@ export async function POST(request) {
 
     if (minionClassError) throw new Error(minionClassError.message);
 
-    revalidatePath("/cards/official");
+    revalidatePath('/cards/custom');
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error(

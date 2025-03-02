@@ -24,7 +24,7 @@ export default async function Home() {
       >
         <Image
           className="absolute mt-[160px] lg:mt-[calc(33.333vh-100px)] z-0 w-[400px] lg:w-[600px] h-auto max-w-[800px]"
-          src="/logo-full.svg"
+          src={`/logo-full.svg`}
           width={800}
           height={800}
           alt="Logo Full"
@@ -57,7 +57,12 @@ export default async function Home() {
           >
             Welcome to Our Community
           </h2>
-          <Link href="https://discord.gg/rvGwTmjw" className="mt-8">
+          <Link
+            href="https://discord.gg/GdWhEBCE"
+            className="mt-8"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="button-purple">
               <FaDiscord className="mr-2" />
               Join Discord

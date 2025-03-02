@@ -27,10 +27,10 @@ export default function ShowcaseRules() {
             <div className="lg:w-1/2 relative group">
               <BoardShowcase
                 cardImages={{
-                  card1: "/card1.png",
-                  card2: "/card2.png",
-                  card3: "/card3.png",
-                  card4: "/card4.png",
+                  card1: `${process.env.NEXT_PUBLIC_BASE_URL}/card1.png`,
+                  card2: `${process.env.NEXT_PUBLIC_BASE_URL}/card2.png`,
+                  card3: `${process.env.NEXT_PUBLIC_BASE_URL}/card3.png`,
+                  card4: `${process.env.NEXT_PUBLIC_BASE_URL}/card4.png`,
                 }}
               />
             </div>

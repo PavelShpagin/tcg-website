@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import Footer from "@/components/footer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import Head from "next/head";
 
 const inter = Roboto({
   weight: ["700"],
@@ -12,18 +12,23 @@ const inter = Roboto({
   display: "swap",
 });
 
+/*
 export const metadata = {
   title: "Casters",
   description: "Casters TCG",
   icons: {
-    icon: "/icon.ico",
+    icon: `${process.env.NEXT_PUBLIC_BASE_URL}/icon.ico`,
   },
-};
+};*/
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
-      <head>
+      <Head>
+        <title>Casters</title>
+        <link rel="icon" href="/icon.png" />
+      </Head>
+      <body suppressHydrationWarning className="flex flex-col min-h-screen">
         <Script id="adobe-gothic-std">
           {`
           (function(d) {
@@ -36,8 +41,6 @@ export default function RootLayout({ children }) {
           })(document);
           `}
         </Script>
-      </head>
-      <body suppressHydrationWarning className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">
           {children}
