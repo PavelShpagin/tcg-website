@@ -21,6 +21,11 @@ const nextConfig = {
         hostname: "localhost",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "casters.cards",
+        pathname: "/**",
+      },
     ],
     // loader: 'custom',
     // loaderFile: './imageLoader.ts',
