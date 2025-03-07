@@ -89,14 +89,14 @@ export default function CardForm({ images }) {
 
       const result = await queryApiWithFile(formData);
       setCardData({
-        class: result.class || cardData.class,
-        type: result.type || cardData.type,
-        title: result.title || cardData.title,
-        level: result.level || cardData.level,
-        cost: result.cost || cardData.cost,
-        description: result.description || cardData.description,
-        attack: result.attack || cardData.attack,
-        health: result.health || cardData.health
+        class: result?.class ?? cardData.class,
+        type: result?.type ?? cardData.type,
+        title: result?.title ?? cardData.title,
+        level: result?.level ?? cardData.level,
+        cost: result?.cost ?? cardData.cost,
+        description: result?.description ?? cardData.description,
+        attack: result?.attack ?? cardData.attack,
+        health: result?.health ?? cardData.health
       });
 
       if (result.error) {
