@@ -17,7 +17,7 @@ import {
   constrainPosition,
 } from "@utils/image-utils";
 import { validateForm, isDisabled } from "@utils/form-utils";
-import { autofillPrompt } from "@utils/autofill-prompt";
+import { queryApiWithFile } from '../app/actions'; // Adjust the path as necessary
 
 export default function CardForm({ images }) {
   const [imageFile, setImageFile] = useState(null);
@@ -47,13 +47,84 @@ export default function CardForm({ images }) {
 
   const router = useRouter();
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImageFile(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          imageWidth.current = img.width;
+          imageHeight.current = img.height;
+          const { scale, position } = calculateScaleAndPosition(
+            img.width,
+            img.height,
+            368,
+            500
+          );
+          setMinScale(scale);
+          setImageScale(scale);
+          setImagePosition(position);
+          setCardImage(e.target.result);
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAutofill = async () => {
+    setUploading(true);
+    try {
+      if (!imageFile) {
+        throw new Error('No image selected');
+      }
+
+      // Create FormData and append necessary data
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      formData.append('cardData', JSON.stringify(cardData));
+
+      const result = await queryApiWithFile(formData);
+      setCardData({
+        class: result.class || cardData.class,
+        type: result.type || cardData.type,
+        title: result.title || cardData.title,
+        level: result.level || cardData.level,
+        cost: result.cost || cardData.cost,
+        description: result.description || cardData.description,
+        attack: result.attack || cardData.attack,
+        health: result.health || cardData.health
+      });
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      // Process the result and update form
+      // ... rest of your existing success handling code ...
+
+    } catch (error) {
+      console.error('Error during autofill:', error);
+      toast({
+        title: "Error",
+        description: error.message || 'Failed to process the card',
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   //==================================================
   // Handlers for new card, uploading, etc.
   //==================================================
   const handleNewCard = () => {
     if (!images || images.length === 0) {
       toast({
-        title: "Error",
+        title: "Error", 
         description: "No images available",
         variant: "destructive",
       });
@@ -70,64 +141,45 @@ export default function CardForm({ images }) {
     currentImageIndex.current = newIndex;
     sessionStorage.setItem("currentImageIndex", newIndex);
 
-    const img = new Image();
-    img.src = nextImage.url;
-    img.onload = () => {
-      imageWidth.current = img.width;
-      imageHeight.current = img.height;
-      const { scale, position } = calculateScaleAndPosition(
-        img.width,
-        img.height,
-        368,
-        500
-      );
-
-      setCardImage(nextImage.url);
-      setImageFile(
-        new File([], nextImage.name, {
-          type: `image/${nextImage.url.split(".").pop()}`,
-        })
-      );
-      setActiveTab(nextImage.type);
-      setCardData({
-        title: "",
-        level: "",
-        cost: "",
-        attack: "",
-        health: "",
-        description: "",
-        class: nextImage.class,
-      });
-      setMinScale(scale);
-      setImageScale(scale);
-      setImagePosition(position);
-      setErrors({});
-    };
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = imageUrl;
-      img.onload = () => {
-        imageWidth.current = img.width;
-        imageHeight.current = img.height;
-        const { scale, position } = calculateScaleAndPosition(
-          img.width,
-          img.height,
-          368,
-          500
-        );
+    fetch(nextImage.url)
+      .then(response => response.blob())
+      .then(blob => {
+        // Convert blob to File
+        const file = new File([blob], "card-image.png", { type: blob.type });
         setImageFile(file);
-        setCardImage(imageUrl);
-        setMinScale(scale);
-        setImageScale(scale);
-        setImagePosition(position);
-      };
-    }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            imageWidth.current = img.width;
+            imageHeight.current = img.height;
+            const { scale, position } = calculateScaleAndPosition(
+              img.width,
+              img.height,
+              368,
+              500
+            );
+            setMinScale(scale);
+            setImageScale(scale);
+            setImagePosition(position);
+            setCardImage(e.target.result);
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+
+    setActiveTab(nextImage.type);
+    setCardData({
+      title: "",
+      level: "",
+      cost: "",
+      attack: "",
+      health: "",
+      description: "",
+      class: nextImage.class,
+    });
+    setErrors({});
   };
 
   const handleInputChange = (e) => {
@@ -167,6 +219,7 @@ export default function CardForm({ images }) {
       if (imageElement && imageElement.href.baseVal) {
         try {
           const response = await fetch(imageElement.href.baseVal);
+          console.log("response", response);
           const blob = await response.blob();
           base64Image = await new Promise((resolve) => {
             const reader = new FileReader();
@@ -263,31 +316,6 @@ export default function CardForm({ images }) {
       });
       setUploading(false);
     }
-  };
-
-  const handleAutofill = async () => {
-    setUploading(true);
-
-    // Dummy response for testing
-    const dummyResponse = {
-      class: "Blue",
-      type: "Minion",
-      title: "Tidal Overlord",
-      level: "6",
-      cost: "Sacrifice a minion",
-      description: "Tapped enemy minions are 1/1",
-      attack: "6",
-      health: "6",
-    };
-
-    // Simulate API call delay
-    setTimeout(() => {
-      setCardData((prev) => ({
-        ...prev,
-        ...dummyResponse,
-      }));
-      setUploading(false);
-    }, 1000);
   };
 
   //==================================================

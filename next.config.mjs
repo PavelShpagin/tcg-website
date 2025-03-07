@@ -24,6 +24,16 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "casters.cards",
+        pathname: "/**",    
+      },
+      {
+        protocol: "https",
+        hostname: "gtll4aox1eqbmdq4.us-east4.gcp.endpoints.huggingface.cloud",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",  
+        hostname: "n5ae8q97e483iws9.us-east-1.aws.endpoints.huggingface.cloud",
         pathname: "/**",
       },
     ],
@@ -33,6 +43,11 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_URL:
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8787",
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    }
   },
 };
 
