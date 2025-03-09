@@ -88,6 +88,7 @@ export default function CardForm({ images }) {
       formData.append('cardData', JSON.stringify(cardData));
 
       const result = await queryApiWithFile(formData);
+      console.log("result", result);
       setCardData({
         class: result?.class ?? cardData.class,
         type: result?.type ?? cardData.type,
