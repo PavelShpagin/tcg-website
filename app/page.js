@@ -63,8 +63,10 @@ export default async function Home() {
             rel="noopener noreferrer"
           >
             <Button className="button-purple">
-              <FaDiscord className="mr-2" />
-              Join Discord
+              <div className="flex items-center justify-center">
+                <FaDiscord className="mr-2" />
+                Join Discord
+              </div>
             </Button>
           </Link>
         </div>

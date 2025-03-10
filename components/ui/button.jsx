@@ -49,7 +49,7 @@ const Button = React.forwardRef(
             <ClipLoader size={20} color={"#fff"} loading={loading} />
           </div>
         )}
-        <div className={loading ? "invisible" : ""}>{children}</div>
+        <span className={loading ? "invisible" : ""}>{children}</span>
       </Comp>
     );
   }
