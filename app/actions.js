@@ -125,8 +125,8 @@ export async function queryApiWithFile(formData) {
     },
   };
   // Add retry logic for API calls
-  const maxRetries = 10;
-  const retryDelay = 10000; // 10 seconds between retries
+  const maxRetries = 30;
+  const retryDelay = 5000; // 10 seconds between retries
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -142,6 +142,9 @@ export async function queryApiWithFile(formData) {
 
       if (response.ok) {
         const result = await response.json();
+        if (!result || !result[0] || !result[0].generated_text) {
+          continue;
+        }
         let jsonOutput = result[0].generated_text.split("[/INST]")[1].trim();
         if (jsonOutput.startsWith("```json")) {
           jsonOutput = jsonOutput.slice(7).trim();

@@ -18,6 +18,7 @@ import {
 } from "@utils/image-utils";
 import { validateForm, isDisabled } from "@utils/form-utils";
 import { queryApiWithFile } from '../app/actions'; // Adjust the path as necessary
+import pako from 'pako';
 
 export default function CardForm({ images }) {
   const [imageFile, setImageFile] = useState(null);
@@ -25,6 +26,7 @@ export default function CardForm({ images }) {
   const [activeTab, setActiveTab] = useState("Minion");
   const [errors, setErrors] = useState({});
   const [uploading, setUploading] = useState(false);
+  const [autofilling, setAutofilling] = useState(false);
   const { toast } = useToast();
   const [cardData, setCardData] = useState({
     title: "",
@@ -76,7 +78,7 @@ export default function CardForm({ images }) {
   };
 
   const handleAutofill = async () => {
-    setUploading(true);
+    setAutofilling(true);
     try {
       if (!imageFile) {
         throw new Error('No image selected');
@@ -87,7 +89,23 @@ export default function CardForm({ images }) {
       formData.append('image', imageFile);
       formData.append('cardData', JSON.stringify(cardData));
 
-      const result = await queryApiWithFile(formData);
+      const maxRetries = 30; // Set the number of retries
+      const retryDelay = 3000; // Delay between retries in milliseconds
+      let result;
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        result = await queryApiWithFile(formData);
+        if (result !== undefined) {
+          break; // Exit loop if result is not undefined
+        }
+        console.log(`Attempt ${attempt} failed, retrying in ${retryDelay / 1000} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+      }
+
+      if (result === undefined) {
+        throw new Error('Failed to get a valid response after multiple attempts');
+      }
+
       console.log("result", result);
       setCardData({
         class: result?.class ?? cardData.class,
@@ -115,7 +133,7 @@ export default function CardForm({ images }) {
         variant: "destructive"
       });
     } finally {
-      setUploading(false);
+      setAutofilling(false);
     }
   };
 
@@ -242,8 +260,8 @@ export default function CardForm({ images }) {
 
       // Draw on canvas -> export to .webp
       const canvas = document.createElement("canvas");
-      canvas.width = 368 * 4;
-      canvas.height = 500 * 4;
+      canvas.width = 368 * 3;
+      canvas.height = 500 * 3;
       const ctx = canvas.getContext("2d");
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
@@ -269,15 +287,24 @@ export default function CardForm({ images }) {
         img.src = svgUrl;
       });
 
-      // Build POST form data
-      const formData = new FormData(event.target);
+      // Compress the webp blob
+      const compressedWebp = pako.deflate(await webpBlob.arrayBuffer());
+      const compressedWebpBlob = new Blob([compressedWebp], { type: 'application/octet-stream' });
+
+      // Compress the image file if it exists
+      let compressedImageBlob = null;
       if (base64Image) {
         const imageBlob = await (await fetch(base64Image)).blob();
-        formData.append("image_file", imageBlob, "image.png");
+        const compressedImage = pako.deflate(await imageBlob.arrayBuffer());
+        compressedImageBlob = new Blob([compressedImage], { type: 'application/octet-stream' });
       }
-      formData.append("scale", imageScale);
-      formData.append("position", JSON.stringify(imagePosition));
-      formData.append("card_file", webpBlob, "card.webp");
+
+      // Build POST form data with compressed files
+      const formData = new FormData(event.target);
+      if (compressedImageBlob) {
+        formData.append("image_file", compressedImageBlob, "image.gz");
+      }
+      formData.append("card_file", compressedWebpBlob, "card.webp.gz");
       formData.append("title", cardData.title);
       formData.append("description", cardData.description);
       formData.append("class", cardData.class);
@@ -286,12 +313,30 @@ export default function CardForm({ images }) {
       formData.append("health", cardData.health);
       formData.append("type", activeTab);
       formData.append("cost", cardData.cost);
+      formData.append("scale", imageScale);
+      formData.append("position", JSON.stringify(imagePosition));
+      // Calculate total form data size in MB
+      let totalSize = 0;
+      for (const pair of formData.entries()) {
+        if (pair[1] instanceof Blob) {
+          totalSize += pair[1].size;
+        } else {
+          totalSize += new Blob([String(pair[1])]).size;
+        }
+      }
+      const formDataSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+      console.log(`Form data size: ${formDataSizeMB} MB`);
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/create-card`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Content-Type"
+          },
         }
       );
       if (response.status >= 200 && response.status < 300) {
@@ -323,7 +368,7 @@ export default function CardForm({ images }) {
   // Drag & Scale
   //==================================================
   const handleMouseDown = (e) => {
-    if (uploading) return;
+    if (uploading || autofilling) return;
     setIsDragging(true);
     dragStart.current = {
       x: e.clientX,
@@ -395,12 +440,12 @@ export default function CardForm({ images }) {
           <button
             key={tab}
             onClick={() => {
-              if (!uploading) {
+              if (!uploading && !autofilling) {
                 setActiveTab(tab);
                 setErrors({});
               }
             }}
-            disabled={uploading}
+            disabled={uploading || autofilling}
             className={`
               px-3 sm:px-5 py-1.5 sm:py-2 text-base sm:text-lg font-semibold rounded-t-xl 
               border-[2.5px] border-transparent 
@@ -411,7 +456,7 @@ export default function CardForm({ images }) {
                   ? "bg-opacity-30 text-[var(--foreground)] border-l-[var(--create-card-border)] border-r-[var(--create-card-border)] border-t-[var(--create-card-border)]"
                   : "bg-opacity-20 text-gray-200 text-opacity-70"
               }
-              ${uploading ? "opacity-50 cursor-not-allowed" : ""}
+              ${uploading || autofilling ? "opacity-50 cursor-not-allowed" : ""}
             `}
           >
             {tab}
@@ -449,7 +494,7 @@ export default function CardForm({ images }) {
                 name="level"
                 type="number"
                 placeholder="Level"
-                disabled={uploading || isDisabled(activeTab, "level")}
+                disabled={uploading || autofilling || isDisabled(activeTab, "level")}
                 value={cardData.level}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
@@ -479,7 +524,7 @@ export default function CardForm({ images }) {
                 name="title"
                 type="text"
                 placeholder="Enter card name"
-                disabled={uploading}
+                disabled={uploading || autofilling}
                 value={cardData.title}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
@@ -507,7 +552,7 @@ export default function CardForm({ images }) {
                 name="cost"
                 type="text"
                 placeholder="Cost"
-                disabled={uploading}
+                disabled={uploading || autofilling}
                 value={cardData.cost}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
@@ -538,7 +583,7 @@ export default function CardForm({ images }) {
                 items={["Blue", "Purple"]}
                 value={cardData.class}
                 onChange={handleSelectorChange}
-                disabled={uploading}
+                disabled={uploading || autofilling}
                 className={`
                   bg-[var(--background)] bg-opacity-80
                   text-[var(--foreground)]
@@ -557,7 +602,7 @@ export default function CardForm({ images }) {
               name="description"
               rows={3}
               placeholder="Enter card text..."
-              disabled={uploading}
+              disabled={uploading || autofilling}
               value={cardData.description}
               onChange={handleInputChange}
               className={`
@@ -587,7 +632,7 @@ export default function CardForm({ images }) {
                 name="attack"
                 type="number"
                 placeholder="Attack"
-                disabled={uploading || isDisabled(activeTab, "attack")}
+                disabled={uploading || autofilling || isDisabled(activeTab, "attack")}
                 value={cardData.attack}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
@@ -615,7 +660,7 @@ export default function CardForm({ images }) {
                 name="health"
                 type="number"
                 placeholder="Health"
-                disabled={uploading || isDisabled(activeTab, "health")}
+                disabled={uploading || autofilling || isDisabled(activeTab, "health")}
                 value={cardData.health}
                 onChange={handleInputChange}
                 onFocus={handleFocus}
@@ -637,7 +682,7 @@ export default function CardForm({ images }) {
             <Label className="text-gray-100 font-bold">Upload Image</Label>
             <Input
               type="file"
-              disabled={uploading}
+              disabled={uploading || autofilling}
               onChange={handleImageChange}
               className={`
                 cursor-pointer
@@ -657,7 +702,8 @@ export default function CardForm({ images }) {
           <div className="flex space-x-4 pt-2">
             <Button
               type="submit"
-              disabled={uploading}
+              disabled={uploading || autofilling}
+              loading={uploading}
               className="
                 button-purple font-bold px-6 py-2
                 bg-gradient-to-r from-gray-600 to-gray-500
@@ -673,7 +719,7 @@ export default function CardForm({ images }) {
             <Button
               type="button"
               variant="outline"
-              disabled={uploading}
+              disabled={uploading || autofilling}
               onClick={handleNewCard}
               className="
                 button-login font-bold px-6 py-2
@@ -690,7 +736,8 @@ export default function CardForm({ images }) {
             <Button
               type="button"
               variant="outline"
-              disabled={uploading}
+              disabled={uploading || autofilling}
+              loading={autofilling}
               onClick={handleAutofill}
               className="button-autofill font-bold px-6 py-2"
             >
@@ -712,7 +759,7 @@ export default function CardForm({ images }) {
               onMouseLeave={handleMouseUp}
               cardData={cardData}
               type={activeTab}
-              disabled={uploading}
+              disabled={uploading || autofilling}
               flip={isFlipped}
             />
 
@@ -724,7 +771,7 @@ export default function CardForm({ images }) {
                 bg-[var(--background)] bg-opacity-60
                 border-2 border-[var(--light-delimiter)]
                 rounded-full
-                ${uploading ? "opacity-40" : ""}
+                ${uploading || autofilling ? "opacity-40" : ""}
               `}
             >
               <Slider
@@ -733,20 +780,20 @@ export default function CardForm({ images }) {
                 min={minScale}
                 max={minScale + 0.5}
                 step={0.01}
-                disabled={uploading}
+                disabled={uploading || autofilling}
                 className="w-28"
               />
             </div>
 
             <button
               onClick={handleFlip}
-              disabled={uploading}
+              disabled={uploading || autofilling}
               className={`
                 w-10 h-10 flex items-center justify-center 
                 rounded-full shadow-md 
                 bg-gray-600 bg-opacity-70 text-white
                 hover:bg-opacity-90 transition-colors duration-300
-                ${uploading ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
+                ${uploading || autofilling ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
               `}
             >
               <FaArrowsAltH />

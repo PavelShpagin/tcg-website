@@ -174,4 +174,8 @@
   .shadow-custom-green-hover {
     @apply shadow-xl shadow-green-400/60;
   }
+
+  .invisible {
+    visibility: hidden;
+  }
 }

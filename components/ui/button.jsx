@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import { ClipLoader } from "react-spinners";
 
 import { cn } from "@lib/utils";
 
@@ -35,14 +36,21 @@ const buttonVariants = cva(
 );
 
 const Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, loading = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <ClipLoader size={20} color={"#fff"} loading={loading} />
+          </div>
+        )}
+        <div className={loading ? "invisible" : ""}>{children}</div>
+      </Comp>
     );
   }
 );

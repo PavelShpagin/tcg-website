@@ -3,22 +3,46 @@ import { createClient } from "@/utils/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { NextResponse } from 'next/server';
+import pako from 'pako';
 
 async function uploadFileToBucket(file, bucketName) {
+  console.log("uploadFileToBucket", file, bucketName);
   const supabase = createClient();
+  
+  if (!file || !(file instanceof Blob)) {
+    throw new Error('Invalid file provided');
+  }
+
   const fileContents = await file.arrayBuffer();
-  const fileName = `${uuidv4()}.${file.name.split(".").pop()}`;
+  const extension = file.type === 'image/webp' ? 'webp' : 'gz';
+  const fileName = `${uuidv4()}.${extension}`;
+  
+  // Add explicit content type handling
+  const contentType = file.type || 'application/octet-stream';
+  
   const { data: uploadData, error: uploadError } = await supabase.storage
     .from(bucketName)
     .upload(`${fileName}`, Buffer.from(fileContents), {
-      contentType: file.type,
+      contentType: contentType,
       upsert: true,
     });
 
-  if (uploadError) throw new Error(uploadError.message);
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    throw new Error(uploadError.message);
+  }
 
   return supabase.storage.from(bucketName).getPublicUrl(uploadData.path).data
     .publicUrl;
+}
+
+async function decompressFile(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const decompressed = pako.inflate(arrayBuffer);
+  return new Blob([decompressed], { 
+    type: file.name.endsWith('.webp.gz') ? 'image/webp' : 'image/png'
+  });
 }
 
 export async function GET() {
@@ -64,15 +88,42 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+
     const supabase = createClient();
+    const data = await request.formData();
+    
+    // Add validation for files
+    const compressedCardFile = data.get("card_file");
+    const compressedImageFile = data.get("image_file");
+    
+    if (!compressedCardFile || !compressedImageFile) {
+      throw new Error('Missing required files');
+    }
+
+    // Decompress files
+    const cardFile = await decompressFile(compressedCardFile);
+    const imageFile = await decompressFile(compressedImageFile);
+
+    // Log file information for debugging
+    console.log('Card file:', {
+      type: cardFile.type,
+      size: cardFile.size,
+      originalSize: compressedCardFile.size
+    });
+    console.log('Image file:', {
+      type: imageFile.type,
+      size: imageFile.size,
+      originalSize: compressedImageFile.size
+    });
 
     const { data: user, error: userError } = await supabase.auth.getUser();
     console.log("user", user, userError);
-    if (userError) throw new Error(userError.message);
-
-    const data = await request.formData();
-    const cardFile = data.get("card_file");
-    const imageFile = data.get("image_file");
+    // if (userError) throw new Error(userError.message);
 
     const [cardImageUrl, imageUrl, isAdminData] = await Promise.all([
       uploadFileToBucket(cardFile, "official-images/card-images"),
@@ -151,17 +202,34 @@ export async function POST(request) {
 
     revalidatePath('/cards/custom');
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, cardData: cardData.data[0] }), {
       status: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
-    console.error(
-      "Failed to handle the file upload and database operation.",
-      error
-    );
+    console.error("Failed to handle the file upload and database operation.", error);
+    
+    // More detailed error response
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to process request" }),
-      { status: 500 }
+      JSON.stringify({ 
+        error: error.message || "Failed to process request",
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      }),
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
     );
   }
+}
+
+export const OPTIONS = async (request) => {
+  return new NextResponse('', {
+    status: 200
+  })
 }

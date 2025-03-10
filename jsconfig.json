@@ -8,7 +8,7 @@
   "include": [
     "**/*.js",
     "**/*.jsx"
-  ],
+, "utils/supabase/middleware.ts", "middleware.ts"  ],
   "exclude": [
     "node_modules"
   ]
