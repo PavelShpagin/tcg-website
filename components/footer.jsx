@@ -8,7 +8,7 @@ const Footer = () => {
   const socialIcons = [
     {
       icon: <FaDiscord />,
-      href: "https://discord.gg/GtCntvru",
+      href: "https://discord.gg/dNB4AGG7",
       label: "Discord",
     },
     { icon: <FaXTwitter />, href: "https://x.com/casters_tcg", label: "Twitter" },

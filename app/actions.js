@@ -4,6 +4,11 @@ import { createClient } from "@/utils/supabase/server";
 import { autofillPrompt, autofillPromptV2 } from "@/utils/autofill-prompt";
 import { createHash } from "crypto";
 import sharp from 'sharp';
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Helper function to generate file hash
 async function generateFileHash(buffer) {
@@ -64,7 +69,7 @@ export async function loginWithDiscord() {
 //   }
 // }
 
-export async function queryApiWithFile(formData) {
+export async function queryApiWithFile(formData, modelType = 'openai') {
   const imageFile = formData.get('image');
   const cardData = JSON.parse(formData.get('cardData'));
 
@@ -74,33 +79,40 @@ export async function queryApiWithFile(formData) {
 
   const supabase = createClient();
 
-  // Convert the image file to a buffer
+  // Process image and generate hash in parallel
   const originalBuffer = Buffer.from(await imageFile.arrayBuffer());
+  const [resizedBuffer, fileHash] = await Promise.all([
+    sharp(originalBuffer)
+      .resize(200) // Reduced from 300px to 200px
+      .jpeg({ quality: 80 }) // Add compression
+      .toBuffer(),
+    generateFileHash(originalBuffer)
+  ]);
 
-  // Resize the image to 400px wide
-  const resizedBuffer = await sharp(originalBuffer)
-    .resize(300) // Resize to 400px wide, maintaining aspect ratio
-    .toBuffer();
-
-  // Generate hash for file name
-  const fileHash = await generateFileHash(resizedBuffer);
-  const fileExtension = imageFile.name.split('.').pop();
+  const fileExtension = 'jpg'; // Force JPEG format
   const fileName = `${fileHash}.${fileExtension}`;
 
-  // Upload to Supabase storage
-  const { data: uploadData, error: uploadError } = await supabase.storage
+  // Start upload to Supabase storage
+  const uploadPromise = supabase.storage
     .from('user-images')
     .upload(`upload-images/${fileName}`, resizedBuffer, {
       upsert: true,
       contentType: imageFile.type,
     });
 
-  // Get public URL
+  // Get public URL in parallel with upload
   const { data: { publicUrl } } = supabase.storage
     .from('user-images')
     .getPublicUrl(`upload-images/${fileName}`);
 
-  // Reorder cardData fields to match the prompt structure
+  // Wait for upload to complete
+  const { error: uploadError } = await uploadPromise;
+  if (uploadError) {
+    console.error("Upload error:", uploadError);
+    return { error: "Failed to upload image" };
+  }
+
+  // Prepare prompt
   const orderedCardData = {
     class: cardData.class || "",
     type: cardData.type || "",
@@ -111,66 +123,63 @@ export async function queryApiWithFile(formData) {
     health: cardData.health || "",
   };
 
-  // Prepare prompt and data for API call
-  const prompt = autofillPrompt.replace("{input}", JSON.stringify(orderedCardData, null, 2));
-  
-  //const publicUrl = "https://fkmywxxthxwsyjqngcgn.supabase.co/storage/v1/object/public/user-images/upload-images/05c497426ed64ef6339363c5894e44d7ed9065b22d4aff5c87cf1da07dae9ee8.png";
-  const data = {
-    inputs: {
-      text: prompt,
-      images: [publicUrl],
-    },
-    parameters: {
-      max_new_tokens: 500,
-    },
-  };
-  // Add retry logic for API calls
-  const maxRetries = 30;
-  const retryDelay = 5000; // 10 seconds between retries
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch("https://n5ae8q97e483iws9.us-east-1.aws.endpoints.huggingface.cloud", {
-        method: "POST",   
+  const prompt = modelType === 'smolvlm' 
+    ? "<image>" + autofillPrompt.replace("{input}", JSON.stringify(orderedCardData)).replace("[IMG]", "").replace("<s>", "").replace("[INST]", "")
+    : autofillPrompt.replace("{input}", JSON.stringify(orderedCardData));
+
+  // Optimize API calls
+  try {
+    let result;
+    if (modelType === 'openai') {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        max_tokens: 500,
+        messages: [{ 
+          role: "user", 
+          content: [
+            { type: "text", text: prompt }, 
+            { type: "image_url", image_url: { url: publicUrl } }
+          ] 
+        }],
+      });
+      result = response.choices[0].message.content;
+    } else {
+      const apiEndpoint = modelType === 'smolvlm'
+        ? "https://wgz35ns80csvwttw.us-east-1.aws.endpoints.huggingface.cloud"
+        : "https://gtll4aox1eqbmdq4.us-east4.gcp.endpoints.huggingface.cloud";
+
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
         headers: {
-          "Accept" : "application/json",
+          "Accept": "application/json",
           "Content-Type": "application/json",
           "Authorization": `Bearer ${process.env.HF_TOKEN}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          inputs: { text: prompt, images: [publicUrl] },
+          parameters: { max_new_tokens: 500 }
+        }),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (!result || !result[0] || !result[0].generated_text) {
-          continue;
-        }
-        let jsonOutput = result[0].generated_text.split("[/INST]")[1].trim();
-        if (jsonOutput.startsWith("```json")) {
-          jsonOutput = jsonOutput.slice(7).trim();
-        }
-        if (jsonOutput.endsWith("```")) {
-          jsonOutput = jsonOutput.slice(0, -3).trim();
-        }
-        console.log("API call successful:", jsonOutput);
-        return JSON.parse(jsonOutput);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (attempt < maxRetries) {
-        console.log(`Attempt ${attempt} failed, retrying in ${retryDelay/1000} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
-      }
-
-    } catch (error) {
-      if (attempt < maxRetries) {
-        console.log(`Attempt ${attempt} failed with error: ${error.message}`);
-        console.log(`Retrying in ${retryDelay/1000} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, retryDelay));
-      } else {
-        console.error("All retry attempts failed:", error);
-        return { error: "Failed to query API after multiple attempts" };
-      }
+      const jsonResponse = await response.json();
+      result = jsonResponse[0].generated_text.split("[/INST]")[1].trim();
     }
+
+    // Clean up the result
+    let jsonOutput = result
+      .replace(/^(Input:|Output:|\s*```json\s*)/g, '')
+      .replace(/\s*```\s*$/g, '')
+      .trim();
+
+    return JSON.parse(jsonOutput);
+
+  } catch (error) {
+    console.error("Error in API call:", error);
+    return { error: "Failed to process image" };
   }
 }
 

@@ -36,6 +36,26 @@ const nextConfig = {
         hostname: "n5ae8q97e483iws9.us-east-1.aws.endpoints.huggingface.cloud",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "un7bugu2aifjw6dm.us-east4.gcp.endpoints.huggingface.cloud",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "hq6hm46zpil5zwh5.us-east4.gcp.endpoints.huggingface.cloud",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gtll4aox1eqbmdq4.us-east4.gcp.endpoints.huggingface.cloud",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "wgz35ns80csvwttw.us-east-1.aws.endpoints.huggingface.cloud",
+        pathname: "/**",
+      }
     ],
     // loader: 'custom',
     // loaderFile: './imageLoader.ts',
