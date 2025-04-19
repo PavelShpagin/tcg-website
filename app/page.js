@@ -57,7 +57,7 @@ export default async function Home() {
             Welcome to Our Community
           </h2>
           <Link
-            href="https://discord.gg/DSYnuJce"
+            href="https://discord.gg/WGjZa3CXAw"
             className="mt-8"
             target="_blank"
             rel="noopener noreferrer"
