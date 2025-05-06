@@ -12,6 +12,7 @@ export async function GET() {
         .from("minions")
         .select("card_img, created_at")
         .eq("is_official", false)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
       supabase
         .from("spells")
@@ -24,6 +25,10 @@ export async function GET() {
         .eq("is_official", false)
         .order("created_at", { ascending: false }),
     ]);
+
+    console.log(minions.data);
+    console.log(spells.data);
+    console.log(stages.data);
 
     if (minions.error) throw new Error(minions.error.message);
     if (spells.error) throw new Error(spells.error.message);
@@ -43,11 +48,13 @@ export async function GET() {
     return new Response(JSON.stringify(allImages), {
       status: 200,
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0',
-        'CDN-Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0",
+        "CDN-Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, stale-while-revalidate=0",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
       /*headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-store, no-cache, must-revalidate',
