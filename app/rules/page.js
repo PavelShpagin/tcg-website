@@ -387,13 +387,13 @@ export default function Rules() {
                     </h2>
                     <p className="text-lg mb-4 text-center font-medium text-gray-300 drop-shadow-md">
                       The player with initiative may choose to attack with only
-                      one of their minions or skip the attack.
+                      one of their untapped minions or skip the attack.
                     </p>
                     <div className="flex items-center justify-center mb-4">
                       <div className="h-0.5 w-16 bg-zinc-600/60 mr-4"></div>
                       <p className="text-lg text-center font-medium text-gray-300 drop-shadow-md">
                         If the player chooses to attack with a minion, they can
-                        choose one of the following options:
+                        tap it to choose one of the following options:
                       </p>
                       <div className="h-0.5 w-16 bg-zinc-600/60 ml-4"></div>
                     </div>
@@ -425,6 +425,10 @@ export default function Rules() {
                       at the end of turn. (Stage cards do not return back to the
                       deck)
                     </Important>
+                    <Note>
+                      Note: Players can attack with minions the same turn they
+                      summoned them.
+                    </Note>
                     <Note>
                       Note: Players who skip their attack can still attack after
                       their opponent attacks.
