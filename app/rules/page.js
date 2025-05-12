@@ -91,8 +91,8 @@ export default function Rules() {
                   <div className="px-4 md:px-0">
                     <div className="space-y-2 mb-4">
                       <p>
-                        <strong className="red-box">Level:</strong> Used for
-                        Sacrificing/Discarding.
+                        <strong className="red-box">Level:</strong> Indicates
+                        the card&apos;s strength.
                       </p>
                       <p>
                         <strong className="red-box">Cost:</strong> What is
@@ -177,7 +177,7 @@ export default function Rules() {
                   Game Board
                 </h2>
                 <p className="text-lg mb-4 text-center">
-                  The game board features several distinct zones:
+                  The game board has these zones for each player:
                 </p>
                 <div className="flex flex-col gap-2 mb-4">
                   <p>
@@ -194,7 +194,7 @@ export default function Rules() {
                   </p>
                   <p>
                     <strong className="red-box">Coin:</strong> Determines
-                    initiative - first player gets 1 coin, second gets 2.
+                    initiative - first player gets 1 coin.
                   </p>
                 </div>
                 <div className="flex flex-col items-center pt-8 pb-4">
@@ -224,13 +224,12 @@ export default function Rules() {
                 <ul className="list-disc ml-6 space-y-1 mb-4">
                   <li>
                     <strong>Decide Initiative:</strong> Flip a coin. The player
-                    with the first initiative holds one coin while the other
-                    gets two.
+                    with the first initiative gets one coin.
                   </li>
                   <li>
                     <strong>Shuffle & Reveal Stage Card:</strong> Each player
                     shuffles their decks and reveals one card from their Stage
-                    deck.
+                    deck, paying its cost.
                   </li>
                   <li>
                     <strong>Draw 5 Cards:</strong> Begin with 5 cards drawn from
@@ -248,6 +247,11 @@ export default function Rules() {
                 </div>
               </section>
 
+              <Note>
+                Note: If you can&apos;t pay for a Stage card, keep revealing
+                until you find one you can afford. Shuffle any other revealed
+                cards back into your Stage deck.
+              </Note>
               <Delimiter />
 
               {/* 5. Turn Cycle */}
@@ -259,27 +263,41 @@ export default function Rules() {
                   Turn Cycle
                 </h2>
 
+                <p className="text-lg mb-6 text-center">
+                  Turns are shared between both players, meaning they draw, set,
+                  reveal cards, and attack on the same turn.
+                </p>
+
+                <Delimiter />
+
                 {/* Draw Phase */}
-                <div className="mb-6 w-full">
-                  <h3 className="text-2xl font-semibold mb-2 text-center">
+                <div className="mt-2 mb-6 w-full">
+                  <h2
+                    className="text-2xl font-semibold mb-4 text-center mt-8"
+                    style={{ fontFamily: "Ingra" }}
+                  >
                     Draw Phase
-                  </h3>
+                  </h2>
                   <p className="text-lg text-center">
-                    At the start of your turn, draw one card from your Main deck
-                    and untap all cards.
+                    At the start of the turn, each player draws one card from
+                    their Main deck and untaps all of their cards.
                   </p>
                 </div>
                 <Delimiter />
 
                 {/* Set Phase */}
                 <div className="mb-6 w-full">
-                  <h3 className="text-2xl font-semibold mb-2 text-center">
+                  <h2
+                    className="text-2xl font-semibold mb-4 text-center mt-8"
+                    style={{ fontFamily: "Ingra" }}
+                  >
                     Set Phase
-                  </h3>
+                  </h2>
                   <p className="text-lg text-center">
                     Each player sets a number of cards face-down equal to the
                     total number of Stage cards on the board (including yours
-                    and opponent&apos;s).
+                    and opponent&apos;s). Both players can set their cards at
+                    the same time.
                   </p>
                   <div className="flex justify-center mt-4">
                     <Image
@@ -295,13 +313,17 @@ export default function Rules() {
 
                 {/* Reveal Phase */}
                 <div className="mb-6 w-full">
-                  <h3 className="text-2xl font-semibold mb-2 text-center">
+                  <h2
+                    className="text-2xl font-semibold mb-4 text-center mt-8"
+                    style={{ fontFamily: "Ingra" }}
+                  >
                     Reveal Phase
-                  </h3>
+                  </h2>
                   <p className="text-lg mb-4 text-center">
-                    Starting with the player holding first initiative, each
-                    player reveals one facedown card at a time and chooses one
-                    of two options:
+                    The player with initiative reveals one facedown card, then
+                    the other player reveals one facedown card. Players
+                    alternate revealing cards until all facedown cards have been
+                    revealed. On reveal, each player chooses one of two options:
                   </p>
                   <div className="mb-4">
                     <p className="text-lg text-center">
@@ -351,11 +373,19 @@ export default function Rules() {
 
                 {/* Battle Phase */}
                 <div className="w-full">
-                  <h3 className="text-2xl font-semibold mb-2 text-center">
+                  <h2
+                    className="text-2xl font-semibold mb-4 text-center mt-8"
+                    style={{ fontFamily: "Ingra" }}
+                  >
                     Battle Phase
-                  </h3>
+                  </h2>
                   <p className="text-lg mb-4 text-center">
-                    The player with initiative may choose to attack. They can:
+                    The player with initiative may choose to attack with one of
+                    their minions or skip the attack.
+                  </p>
+                  <p className="text-lg mb-4 text-center">
+                    If the player chooses to attack, they can choose one of the
+                    following options:
                   </p>
                   <ul className="list-disc ml-6 space-y-1 mb-4">
                     <li>
@@ -364,11 +394,10 @@ export default function Rules() {
                       to block (they choose the order).
                     </li>
                     <li>Attack an opponent&apos;s tapped minion.</li>
-                    <li>Or skip the attack.</li>
                   </ul>
                   <p className="text-lg mb-4 text-center">
-                    Next, the other Player can attack in the same way. If both
-                    Players skip, the Battle Phase ends.
+                    Next, the other player can attack in the same way. If both
+                    players skip, the Battle Phase ends.
                   </p>
                   <div className="flex justify-center">
                     <Image
@@ -377,18 +406,23 @@ export default function Rules() {
                       width={440 * quality}
                       height={220 * quality}
                       className="w-[440px]"
-                    /> 
+                    />
                   </div>
                 </div>
                 <section id="notes" className="space-y-4 mt-4">
                   <Important>
                     Important: Damage dealt to minions and Stages is restored at
-                    the end of turn. (Stage cards are not restored.)
+                    the end of turn. (Stage cards do not return back to the
+                    deck)
                   </Important>
                   <Note>
-                    Note: When attacking Hero, if more damage dealt than the
-                    total Health of blocking minions, the rest of the damage is
-                    dealt to the enemy Hero.
+                    Note: Players who skip their attack can still attack after
+                    their opponent attacks.
+                  </Note>
+                  <Note>
+                    Note: When attacking a Hero, excess damage beyond blocking
+                    minions&apos; health is dealt to the Hero. When attacking a
+                    minion, excess damage is not transferred to the Hero.
                   </Note>
                 </section>
               </section>
@@ -398,13 +432,13 @@ export default function Rules() {
               {/* 6. End of Turn */}
               <section id="end-turn" className="flex flex-col items-center">
                 <h2
-                  className="text-4xl font-bold mb-4 text-center"
+                  className="text-2xl font-semibold mb-4 text-center"
                   style={{ fontFamily: "Ingra" }}
                 >
                   End of Turn
                 </h2>
                 <p className="text-lg text-center">
-                  At the end of the turn, the player with two coins passes one
+                  At the end of the turn, the player with initiative passes the
                   coin to the opponent to change the initiative, and the turn
                   ends.
                 </p>
@@ -424,7 +458,8 @@ export default function Rules() {
                   Win Condition
                 </h2>
                 <p className="text-lg text-center">
-                  The game is won when a player loses all their Health cards.
+                  The game is won when the other player loses all their Stage
+                  cards.
                 </p>
               </section>
 
@@ -440,14 +475,18 @@ export default function Rules() {
                 </h2>
                 <div className="flex flex-col space-y-2">
                   <div>
+                    <strong className="red-box">Sacrifice:</strong> Send a card
+                    from your field to your Graveyard (GY) to pay a cost or
+                    trigger an effect.
+                  </div>
+                  <div>
+                    <strong className="red-box">Discard:</strong> Send a card
+                    from your hand to your Graveyard (GY).
+                  </div>
+                  <div>
                     <strong className="red-box">Search:</strong> Search your
                     deck for a specific card, reveal it, and add it to your
                     hand.
-                  </div>
-                  <div>
-                    <strong className="red-box">Sacrifice:</strong> Send a card
-                    from the field to your Graveyard (GY) to pay a cost or
-                    trigger an effect.
                   </div>
                   <div>
                     <strong className="red-box">Negate:</strong> Cancel or
