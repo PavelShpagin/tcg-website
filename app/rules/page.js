@@ -131,7 +131,7 @@ export default function Rules() {
                       {
                         type: "Minion",
                         image:
-                          "https://fkmywxxthxwsyjqngcgn.supabase.co/storage/v1/object/public/official-images/card-images/12be8bba-636c-4b85-9db0-3a807981a767.webp",
+                          "https://fkmywxxthxwsyjqngcgn.supabase.co/storage/v1/object/public/official-images/card-images/32792799-da56-4ff1-a2ef-612dfc5bc796.webp",
                         description:
                           "Summons a minion with Attack and Health stats and a unique effect.",
                       },
@@ -145,7 +145,7 @@ export default function Rules() {
                       {
                         type: "Stage",
                         image:
-                          "https://fkmywxxthxwsyjqngcgn.supabase.co/storage/v1/object/public/official-images/card-images/5a963f00-c936-401b-9b2b-c5029bb8cdf4.webp",
+                          "https://fkmywxxthxwsyjqngcgn.supabase.co/storage/v1/object/public/official-images/card-images/c38c9c56-d6d7-45f3-abc9-507ef31bcd8d.webp",
                         description:
                           "Represents your hero's health (each equals 5 health) and limits the number of cards you can set.",
                       },
