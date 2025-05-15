@@ -12,16 +12,19 @@ export async function GET() {
         .from("minions")
         .select("card_img, created_at")
         .eq("is_official", true)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
       supabase
         .from("spells")
         .select("card_img, created_at")
         .eq("is_official", true)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
       supabase
         .from("stages")
         .select("card_img, created_at")
         .eq("is_official", true)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
     ]);
 
@@ -38,8 +41,8 @@ export async function GET() {
     const allImages = [...minions.data, ...spells.data, ...stages.data];
     allImages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    return new Response(JSON.stringify(allImages), { 
-      status: 200
+    return new Response(JSON.stringify(allImages), {
+      status: 200,
     });
   } catch (error) {
     console.error("Failed to fetch images", error);

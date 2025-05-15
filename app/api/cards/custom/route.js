@@ -18,11 +18,13 @@ export async function GET() {
         .from("spells")
         .select("card_img, created_at")
         .eq("is_official", false)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
       supabase
         .from("stages")
         .select("card_img, created_at")
         .eq("is_official", false)
+        .eq("is_public", true)
         .order("created_at", { ascending: false }),
     ]);
 
