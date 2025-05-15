@@ -499,6 +499,11 @@ export default function Rules() {
                       from your hand to your Graveyard (GY).
                     </div>
                     <div>
+                      <strong className="red-box">Passive:</strong> A spell with
+                      Passive remains on the field and cannot be destroyed by
+                      minion attacks, only by sacrifice and destroy effects.
+                    </div>
+                    <div>
                       <strong className="red-box">Search:</strong> Search your
                       deck for a specific card, reveal it, and add it to your
                       hand.
